@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import 'bootstrap/dist/css/bootstrap.css'; //bootstrap (bundled)
 import './index.css'; //our css (bundled)
 
-import App from './App';
+import Calendar from './Calendar';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
+
+// Import material theme provider
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
  // Initialize Firebase
  var config = {
@@ -19,5 +21,11 @@ import 'firebase/database';
   messagingSenderId: "102064689248"
 };
 firebase.initializeApp(config);
+
+const App = () => (
+  <MuiThemeProvider>
+    <Calendar />
+  </MuiThemeProvider>
+);
 
 ReactDOM.render(<App />, document.getElementById('root'));

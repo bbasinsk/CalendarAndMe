@@ -1,2 +1,7 @@
 /* utility CSS not provided by Bootstrap */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
 .font-strike { text-decoration: line-through; }
