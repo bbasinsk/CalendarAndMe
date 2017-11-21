@@ -9,7 +9,7 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 // Import material theme provider
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { MuiThemeProvider } from 'material-ui/styles';
 
  // Initialize Firebase
  var config = {
@@ -23,7 +23,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 firebase.initializeApp(config);
 
 const App = () => (
-  <MuiThemeProvider>
+  <MuiThemeProvider >
     <Calendar />
   </MuiThemeProvider>
 );
