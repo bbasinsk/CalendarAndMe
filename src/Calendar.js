@@ -55,7 +55,7 @@ class Calendar extends Component {
         />
 
         <div className={'drawer'} style={{top: '64px', position: 'fixed'}} > {/* Pushes drawer below AppBar */}
-          <Drawer open={this.state.drawerOpen} style={drawerStyle} >
+          <Drawer open={this.state.drawerOpen} >
 
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
             <div style={{height: '64px'}} ></div> 
