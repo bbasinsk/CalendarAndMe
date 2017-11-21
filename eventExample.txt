@@ -1,0 +1,21 @@
+From the Google Calendar API:
+
+colorId:"3"
+created:"2017-08-08T17:54:32.000Z"
+creator:{email: "benbasinski97@gmail.com", displayName: "Ben Basinski", self: true}
+end:{dateTime: "2017-11-20T12:20:00-08:00", timeZone: "America/Los_Angeles"}
+etag:""3011585162352000""
+htmlLink:"https://www.google.com/calendar/event?eid=NnNyajBkajJjNWkzMmJiMTY0czMwYjlrNm9wajBiOXBjOWkzaWI5aTZzbzNjb3BwNzVpNmNvOWljOF8yMDE3MTEyMFQxODMwMDBaIGJlbmJhc2luc2tpOTdAbQ"
+iCalUID:"6srj0dj2c5i32bb164s30b9k6opj0b9pc9i3ib9i6so3copp75i6co9ic8@google.com"
+id:"6srj0dj2c5i32bb164s30b9k6opj0b9pc9i3ib9i6so3copp75i6co9ic8_20171120T183000Z"
+kind:"calendar#event"
+location:"MGH 430"
+organizer:{email: "benbasinski97@gmail.com", displayName: "Ben Basinski", self: true}
+originalStartTime:{dateTime: "2017-11-20T10:30:00-08:00", timeZone: "America/Los_Angeles"}
+recurringEventId:"6srj0dj2c5i32bb164s30b9k6opj0b9pc9i3ib9i6so3copp75i6co9ic8"
+reminders:{useDefault: true}
+sequence:1
+start:{dateTime: "2017-11-20T10:30:00-08:00", timeZone: "America/Los_Angeles"}
+status:"confirmed"
+summary:"Info 343 B"
+updated:"2017-09-19T03:43:01.176Z"
