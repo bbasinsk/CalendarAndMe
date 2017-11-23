@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
+
+import GroupList from './components/GroupList';
 
 import firebase from 'firebase/app';
 
-class Calendar extends Component {
+import './app.css'; //our css (bundled)
+
+class App extends Component {
   constructor(props) {
     super(props)
-    this.state = { 
-      events: {}, 
+    this.state = {
+      events: {},
       drawerOpen: false
     };
   }
@@ -30,11 +32,11 @@ class Calendar extends Component {
     this.eventsRef.off();
   }
 
-  handleDrawerToggle = () => this.setState({drawerOpen: !this.state.drawerOpen});
+  handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
 
   render() {
     //Pushes the main content over when the drawer is open
-    const mainContentStyle = {  transition: 'margin-left 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
+    const mainContentStyle = { transition: 'margin-left 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
     if (this.state.drawerOpen) {
       mainContentStyle.marginLeft = 256;
     }
@@ -49,41 +51,28 @@ class Calendar extends Component {
 
     return (
       <div>
-        <AppBar 
-            title={'Calendar & Me'}
-            onLeftIconButtonTouchTap={this.handleDrawerToggle}
+        <AppBar
+          title={'Calendar & Me'}
+          onLeftIconButtonTouchTap={this.handleDrawerToggle}
         />
 
-        <div className={'drawer'} style={{top: '64px', position: 'fixed'}} > {/* Pushes drawer below AppBar */}
+        <div className={'drawer'} style={{ top: '64px', position: 'fixed' }} > {/* Pushes drawer below AppBar */}
           <Drawer open={this.state.drawerOpen} >
 
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
-            <div style={{height: '64px'}} ></div> 
-
-
-            <List>
-              <ListItem primaryText="My first group" />
-              <ListItem primaryText="My Second group" />
-              <ListItem primaryText="My third group" />
-            </List>
-            <Divider />
-            <List>
-              <ListItem primaryText="Create Group" />
-            </List>
-
-
+            <div style={{ height: '64px' }} ></div>
           </Drawer>
         </div>
-        
-        
+
+
         <main style={mainContentStyle} >
-        
+          <GroupList />
           <p>My events</p>
           <EventList
             events={events}
           />
         </main>
-        
+
       </div>
     );
   }
@@ -125,4 +114,4 @@ class Event extends Component {
   }
 }
 
-export default Calendar;
+export default App;

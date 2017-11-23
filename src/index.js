@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './index.css'; //our css (bundled)
 
-import Calendar from './Calendar';
+import App from './App';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -22,10 +22,10 @@ import { MuiThemeProvider } from 'material-ui/styles';
 };
 firebase.initializeApp(config);
 
-const App = () => (
+const MyApp = () => (
   <MuiThemeProvider >
-    <Calendar />
+    <App />
   </MuiThemeProvider>
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<MyApp />, document.getElementById('root'));
