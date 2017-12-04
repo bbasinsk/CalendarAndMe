@@ -1,31 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import './index.css'; //our css (bundled)
-
+import './index.css';
 import App from './App';
+// import registerServiceWorker from './registerServiceWorker';
 
 import firebase from 'firebase/app';
-import 'firebase/database';
+import 'firebase/database'
+import 'firebase/auth';
 
-// Import material theme provider
-import { MuiThemeProvider } from 'material-ui/styles';
+import { BrowserRouter } from 'react-router-dom'; //React router
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
- // Initialize Firebase
- var config = {
-  apiKey: "AIzaSyAfv4kQhbCSCGCvwEd3wRNKIMlUxFN6_-E",
-  authDomain: "calendarandme.firebaseapp.com",
-  databaseURL: "https://calendarandme.firebaseio.com",
-  projectId: "calendarandme",
-  storageBucket: "calendarandme.appspot.com",
-  messagingSenderId: "102064689248"
+// Initalizes the app with material-ui theme and routing
+const CalApp = () => (
+    <BrowserRouter basename={process.env.PUBLIC_URL + '/'}>
+        <MuiThemeProvider>
+            <App />
+        </MuiThemeProvider>
+    </BrowserRouter>
+);
+
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyAfv4kQhbCSCGCvwEd3wRNKIMlUxFN6_-E",
+    authDomain: "calendarandme.firebaseapp.com",
+    databaseURL: "https://calendarandme.firebaseio.com",
+    projectId: "calendarandme",
+    storageBucket: "calendarandme.appspot.com",
+    messagingSenderId: "102064689248"
 };
 firebase.initializeApp(config);
 
-const MyApp = () => (
-  <MuiThemeProvider >
-    <App />
-  </MuiThemeProvider>
-);
-
-ReactDOM.render(<MyApp />, document.getElementById('root'));
+ReactDOM.render(<CalApp />, document.getElementById('root'));
+// registerServiceWorker();

@@ -1,115 +1,152 @@
 import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-import GroupList from './components/GroupList';
+import firebase from 'firebase';
 
-import firebase from 'firebase/app';
-
-import './app.css'; //our css (bundled)
+import { LoginForm, SignupForm } from './components/UserAuth';
+import LandingPage from './components/LandingPage';
+import Calendar from './components/Calendar';
 
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      events: {},
-      drawerOpen: false
-    };
+      user: null
+    }
   }
 
   componentDidMount() {
-    // Gets a reference to the firebase events so that when they change, 
-    // they also change the current state.
-
-    this.eventsRef = firebase.database().ref('events');
-    this.eventsRef.on('value', (snapshot) => {
-      this.setState({ events: snapshot.val() })
+    this.unregisterFunction = firebase.auth().onAuthStateChanged((firebaseUser) => {
+      if (firebaseUser) { // someone logged in
+        this.setState({
+          user: firebaseUser,
+          loading: false
+        });
+      } else { //someone logged out
+        this.setState({
+          user: null,
+          loading: false
+        });
+      }
     });
   }
 
-  componentWillUnmount() {
-    // Closes the listener when a client is about to leave
-    this.eventsRef.off();
+
+
+  //A callback function for registering new users
+  handleSignUp(email, password, username) {
+    this.setState({
+      errorMessage: null, //clear any old errors
+      loading: true      //show loading
+    });
+
+    if (username.length === 0) {
+      this.setState({
+        errorMessage: 'Must provide username',
+        loading: false
+      });
+    } else {
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((firebaseUser) => {
+          let promise = firebaseUser.updateProfile({
+            displayName: username
+          });
+
+
+          return promise;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({
+            error: error,
+            loading: false
+          });
+        });
+    }
   }
 
-  handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
+  //A callback function for logging in existing users
+  handleSignIn(email, password) {
+    this.setState({
+      errorMessage: null,
+      loading: true
+    }); //clear any old errors
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.setState({ loading: false });
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({
+          errorMessage: error.message,
+          loading: false
+        });
+      });
+    
+  }
+
+  //A callback function for logging out the current user
+  handleSignOut() {
+    this.setState({
+      errorMessage: null,
+      loading: true
+    }); //clear any old errors
+
+    firebase.auth().signOut()
+      .then(() => {
+        this.setState({ loading: false });
+      })
+      .catch((error) => {
+        this.setState({
+          errorMessage: error.message,
+          loading: false
+        });
+      });
+  }
+
 
   render() {
-    //Pushes the main content over when the drawer is open
-    const mainContentStyle = { transition: 'margin-left 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
-    if (this.state.drawerOpen) {
-      mainContentStyle.marginLeft = 256;
-    }
-
-    //converts events into an array
-    let eventIds = Object.keys(this.state.events);
-    let events = eventIds.map((id) => {
-      let event = this.state.events[id];
-      event.id = id;
-      return event;
-    });
-
     return (
-      <div>
-        <AppBar
-          title={'Calendar & Me'}
-          onLeftIconButtonTouchTap={this.handleDrawerToggle}
+      <Switch>
+        <Route exact path='/' render={(routerProps) =>
+          (<Calendar
+            handleSignOut={() => this.handleSignOut()}
+            currentUser={this.state.user}
+            conversations={this.state.conversations}
+            {...routerProps}
+          />)}
         />
 
-        <div className={'drawer'} style={{ top: '64px', position: 'fixed' }} > {/* Pushes drawer below AppBar */}
-          <Drawer open={this.state.drawerOpen} >
+        <Route path='/landing' render={(routerProps) =>
+          (<LandingPage
+            {...routerProps}
+            currentUser={this.state.user}
+          />)}
+        />
 
-            {/* Pushes drawer content down so that the appbar doesn't cover it */}
-            <div style={{ height: '64px' }} ></div>
-          </Drawer>
-        </div>
+        <Route path='/login' render={(routerProps) =>
+          (<LoginForm
+            {...routerProps}
+            currentUser={this.state.user}
+            handleSignIn={(e, p) => this.handleSignIn(e, p)}
+          />)}
+        />
 
+        <Route path='/join' render={(routerProps) =>
+          (<SignupForm
+            {...routerProps}
+            currentUser={this.state.user}
+            handleSignUp={(e, p, u) => this.handleSignUp(e, p, u)}
+          />)}
+        />
 
-        <main style={mainContentStyle} >
-          <GroupList />
-          <p>My events</p>
-          <EventList
-            events={events}
-          />
-        </main>
-
-      </div>
-    );
-  }
-}
-
-class EventList extends Component {
-  render() {
-
-    if (this.props.events == null) {
-      return (
-        <p>You don't have any events</p>
-      );
-    }
-
-    //Create the array of event items using <Event> Components
-    let eventItemsArray = this.props.events.map((event) => {
-      return (<Event
-        key={event.id}
-        summary={event.summary} />
-      );
-    });
-
-    return (
-      <ol>
-        {eventItemsArray}
-      </ol>
-    );
-  }
-}
-
-class Event extends Component {
-
-  render() {
-    return (
-      <li>
-        {this.props.summary}
-      </li>
+        <Route render={(routerProps) =>
+          (<Redirect to="/"
+            {...routerProps}
+          />)}
+        />        
+      </Switch>
     );
   }
 }

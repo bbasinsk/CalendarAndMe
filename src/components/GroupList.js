@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
-import ActionInfo from 'material-ui/svg-icons/action/info';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
@@ -33,7 +32,7 @@ export default class GroupList extends Component {
 
     componentWillUnmount() {
         // Closes the listener when a client is about to leave
-        this.eventsRef.off();
+        this.groupsRef.off();
     }
 
 
@@ -54,7 +53,7 @@ export default class GroupList extends Component {
         return (
             <div>
                 <List>
-                    <Subheader rightIcon={<ActionInfo />} >My Groups</Subheader>
+                    <Subheader>My Groups</Subheader>
                     {groupElements}
                     {/* <Divider inset={true} /> */}
                     <ListItem primaryText="Create a group" rightIcon={<ContentAddCircle />} />

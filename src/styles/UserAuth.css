@@ -1,0 +1,19 @@
+.login-form {
+    margin: 20px;
+}
+
+.auth-card {
+    margin: auto;
+    text-align: 'center';
+    display: 'inline-block';
+    padding: 40px;
+    width: 350px;
+}
+
+.auth-title {
+    color: rgb(60, 60, 60);
+}
+
+.auth-button {
+    margin-top: 30px;
+}
