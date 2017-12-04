@@ -68,7 +68,7 @@ class Calendar extends Component {
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
             <div style={{ height: '64px' }} ></div>
 
-            <GroupList />
+            <GroupList addPersonalCalendar={() => this.props.addPersonalCalendar()} />
 
           </Drawer>
         </div>
@@ -97,13 +97,21 @@ class EventList extends Component {
 
     //Create the array of event items using <Event> Components
     let eventItemsArray = this.props.events.map((event) => {
-      return (<li>{event.summary}</li>)
+      return (<Event key={event.id} summary={event.summary} />)
     });
 
     return (
       <ul>
         {eventItemsArray}
       </ul>
+    );
+  }
+}
+
+class Event extends Component {
+  render() {
+    return (
+      <li>{this.props.summary}</li>
     );
   }
 }

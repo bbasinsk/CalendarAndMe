@@ -32,7 +32,6 @@ class App extends Component {
   }
 
 
-
   //A callback function for registering new users
   handleSignUp(email, password, username) {
     this.setState({
@@ -51,7 +50,6 @@ class App extends Component {
           let promise = firebaseUser.updateProfile({
             displayName: username
           });
-
 
           return promise;
         })
@@ -105,6 +103,23 @@ class App extends Component {
       });
   }
 
+  addPersonalCalendar() {
+    let userID = this.state.user.uid;
+    console.log('adding cal');
+
+    let users = {};
+    users[userID] = {
+      displayName: this.state.user.displayName,
+      groups: ['personal']
+    };
+
+    this.usersRef = firebase.database().ref('users');
+    this.usersRef.update(users)
+      .catch(error => console.log(error.message));
+
+
+  }
+
 
   render() {
     return (
@@ -114,6 +129,7 @@ class App extends Component {
             handleSignOut={() => this.handleSignOut()}
             currentUser={this.state.user}
             conversations={this.state.conversations}
+            addPersonalCalendar={() => this.addPersonalCalendar()}
             {...routerProps}
           />)}
         />

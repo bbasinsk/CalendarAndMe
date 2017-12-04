@@ -40,7 +40,6 @@ export class LoginForm extends Component {
 
   render() {
     if (this.props.currentUser) {
-      console.log('Logged in, redirecting to /');
       return (<Redirect to={'/'} />);
     }
 
