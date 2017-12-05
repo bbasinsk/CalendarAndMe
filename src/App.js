@@ -7,6 +7,8 @@ import { LoginForm, SignupForm } from './components/UserAuth';
 import LandingPage from './components/LandingPage';
 import Calendar from './components/Calendar';
 
+import BigCalendar from 'react-big-calendar';
+
 class App extends Component {
   constructor(props) {
     super(props);

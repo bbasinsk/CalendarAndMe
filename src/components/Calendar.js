@@ -7,7 +7,11 @@ import Drawer from 'material-ui/Drawer';
 import GroupList from './GroupList';
 import NavBar from './NavBar';
 
+import BigCalendar from 'react-big-calendar';
+
 import firebase from 'firebase/app';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import styles from '../styles/CalendarStyle';
 
@@ -37,8 +41,8 @@ class Calendar extends Component {
 
   render() {
     if (!this.props.currentUser) {
-      return(
-        <Redirect to="/landing"/>
+      return (
+        <Redirect to="/landing" />
       );
     }
 
@@ -54,6 +58,17 @@ class Calendar extends Component {
       styles.mainContent,
       this.state.drawerOpen && styles.leftMargin
     );
+
+    BigCalendar.setLocalizer(
+      BigCalendar.momentLocalizer(moment)
+    );
+
+    for (let item of events) {
+      item.end = new Date(item.end);
+      item.start = new Date(item.start);
+    }
+
+    let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
 
     return (
       <div>
@@ -72,12 +87,14 @@ class Calendar extends Component {
 
           </Drawer>
         </div>
-
-
+        
         <main className={mainContentClassName} >
-          <p>My events</p>
-          <EventList
+          <BigCalendar
+            {...this.props}
             events={events}
+            views={allViews}
+            step={60}
+            defaultDate={new Date(2017, 12, 1)}
           />
         </main>
 
