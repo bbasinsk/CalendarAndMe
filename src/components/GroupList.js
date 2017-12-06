@@ -122,7 +122,6 @@ class AddCalendarDialog extends Component {
   }
 
   getGCalendar() {
-    console.log('starting g-auth');
     this.handleClientLoad();
   }
 
@@ -131,7 +130,7 @@ class AddCalendarDialog extends Component {
   }
 
   initClient() {
-    window.gapi.client.init({
+    gapi.client.init({
       apiKey: Keys.API_KEY,
       clientId: Keys.CLIENT_ID,
       discoveryDocs: Keys.DISCOVERY_DOCS,
@@ -142,8 +141,8 @@ class AddCalendarDialog extends Component {
   }
 
   listenForAuthStatusChange() {
-     // Listen for sign-in state changes.
-     gapi.auth2.getAuthInstance().isSignedIn.listen(() => {
+    //  // Listen for sign-in state changes.
+     gapi.auth2.getAuthInstance().isSignedIn.listen((listen) => {
       this.updateSigninStatus();
     });
 
@@ -153,6 +152,7 @@ class AddCalendarDialog extends Component {
   }
 
   updateSigninStatus(isSignedIn) {
+    console.log('updating sign in status');
     if (isSignedIn) { 
       this.getUpcomingEvents();
     }
@@ -176,6 +176,8 @@ class AddCalendarDialog extends Component {
      
       if (events.length > 0) {
         for (let i = 0; i < events.length; i++) {
+          console.log('event: ' + i);
+
           let event = events[i];
           eventsRef.push(event)
             .catch((error) => console.log(error));

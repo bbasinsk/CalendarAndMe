@@ -19,7 +19,7 @@ class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      events: {},
+      events: [],
       drawerOpen: true
     };
   }
@@ -27,16 +27,21 @@ class Calendar extends Component {
   componentDidMount() {
     // Gets a reference to the firebase events so that when they change, 
     // they also change the current state.
-
-    this.eventsRef = firebase.database().ref('events');
-    this.eventsRef.on('value', (snapshot) => {
-      this.setState({ events: snapshot.val() })
-    });
+    if (this.props.currentUser) {
+      let uid = this.props.currentUser.uid;
+      this.eventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
+      this.eventsRef.on('value', (snapshot) => {
+        if (snapshot.val()) {
+          this.setState({ events: snapshot.val() })
+        }
+      });
+    }  
   }
 
   componentWillUnmount() {
     // Closes the listener when a client is about to leave
-    this.eventsRef.off();
+    if (this.eventsRef)
+      this.eventsRef.off();
   }
 
   render() {
@@ -47,6 +52,7 @@ class Calendar extends Component {
     }
 
     //converts events into an array
+
     let eventIds = Object.keys(this.state.events);
     let events = eventIds.map((id) => {
       let event = this.state.events[id];
@@ -99,36 +105,6 @@ class Calendar extends Component {
         </main>
 
       </div>
-    );
-  }
-}
-
-class EventList extends Component {
-  render() {
-
-    if (this.props.events == null) {
-      return (
-        <p>You don't have any events</p>
-      );
-    }
-
-    //Create the array of event items using <Event> Components
-    let eventItemsArray = this.props.events.map((event) => {
-      return (<Event key={event.id} summary={event.summary} />)
-    });
-
-    return (
-      <ul>
-        {eventItemsArray}
-      </ul>
-    );
-  }
-}
-
-class Event extends Component {
-  render() {
-    return (
-      <li>{this.props.summary}</li>
     );
   }
 }
