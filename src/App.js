@@ -107,19 +107,21 @@ class App extends Component {
 
   addPersonalCalendar() {
     let userID = this.state.user.uid;
-    console.log('adding cal');
+    
+    // var newGroupKey = firebase.database().ref().child('').push().key;
 
     let users = {};
     users[userID] = {
       displayName: this.state.user.displayName,
-      groups: ['personal']
+      groups: {
+        personal: 'noKey'
+      }
     };
 
     this.usersRef = firebase.database().ref('users');
     this.usersRef.update(users)
       .catch(error => console.log(error.message));
-
-
+    
   }
 
 
