@@ -48,6 +48,7 @@ export default class GroupList extends Component {
 
   handleDialogClose() {
     this.setState({ dialogOpen: false });
+    window.gapi.auth2.getAuthInstance().signOut();
   };
 
   render() {
@@ -122,13 +123,7 @@ class AddCalendarDialog extends Component {
   }
 
   componentDidMount() {
-    if (gapi.auth2)
-      gapi.auth2.getAuthInstance().signOut(); //sign out of gapi
     this.handleClientLoad();
-  }
-
-  getGCalendar() {
-    this.handleAuthClick();
   }
 
   handleClientLoad() {
@@ -142,37 +137,51 @@ class AddCalendarDialog extends Component {
       discoveryDocs: Keys.DISCOVERY_DOCS,
       scope: Keys.SCOPES
     }).then(() => {
-      // Listen for sign-in state changes.
-      gapi.auth2.getAuthInstance().isSignedIn.listen(() => this.updateSigninStatus());
+      console.log('client initialized');
+      this.GoogleAuth = gapi.auth2.getAuthInstance();
 
-      // Handle the initial sign-in state.
-      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      // Listen for sign-in state changes.
+      this.GoogleAuth.isSignedIn.listen(() => this.updateSigninStatus());
+
+      // // Listen for sign-in state changes.
+      // gapi.auth2.getAuthInstance().isSignedIn.listen(() => this.updateSigninStatus());
+
+      // // Handle the initial sign-in state.
+      this.updateSigninStatus(this.GoogleAuth.isSignedIn.get());
+
     });
   }
 
   handleAuthClick() {
-    gapi.auth2.getAuthInstance().signIn();
+    console.log('signing in');
+    this.GoogleAuth.signIn();
   }
 
-  listenForAuthStatusChange() {
-    //  // Listen for sign-in state changes.
-    gapi.auth2.getAuthInstance().isSignedIn.listen((listen) => {
-      this.updateSigninStatus();
-    });
-
-    // Handle the initial sign-in state.
-    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    gapi.auth2.getAuthInstance().signIn();
+  sendAuthorizedApiRequest() {
+    
+    if (this.isAuthorized) {
+      this.getUpcomingEvents();
+    
+    } else {
+      this.GoogleAuth.signIn();
+    }
   }
+
 
   updateSigninStatus(isSignedIn) {
-    console.log('updating sign in status');
-    if (isSignedIn) {
-      this.getUpcomingEvents();
+    if (this.GoogleAuth.isSignedIn.get()) {
+      console.log('authorized');
+      this.isAuthorized = true;
+
+      this.sendAuthorizedApiRequest();
+    } else {
+      console.log('not authorized');
+      this.isAuthorized = false;
     }
   }
 
   getUpcomingEvents() {
+    console.log('getting upcoming events');
     let myEvents = [];
 
     gapi.client.calendar.events.list({
@@ -184,22 +193,24 @@ class AddCalendarDialog extends Component {
       'orderBy': 'startTime'
     }).then((response) => {
       let events = response.result.items;
+      let myEvents = [];
 
       let uid = firebase.auth().currentUser.uid;
       let eventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
 
       if (events.length > 0) {
         for (let i = 0; i < events.length; i++) {
-          console.log('event: ' + i);
-
+        
           let event = events[i];
-          eventsRef.push(event)
-            .catch((error) => console.log(error));
+          myEvents.push(event);
         }
       } else {
         myEvents = null;
       }
-      console.log('events pushed');
+
+      eventsRef.set(myEvents).catch((error) => console.log(error));
+
+      console.log('events pushed to firebase');
       gapi.auth2.getAuthInstance().signOut(); //sign out of gapi
     });
     this.setState({ events: myEvents })
@@ -223,7 +234,7 @@ class AddCalendarDialog extends Component {
               label="Submit"
               primary={true}
               onClick={() => {
-                this.getGCalendar();
+                this.handleAuthClick();
                 this.props.handleClose();
               }}
             />,
