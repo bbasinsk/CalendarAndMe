@@ -127,11 +127,7 @@ class AddCalendarDialog extends Component {
   }
 
   handleClientLoad() {
-    if (!gapi.auth2) { //if a google account is not logged in
-      gapi.load('client:auth2', () => this.initClient());
-    } else {
-      console.log('Already logged in');
-    }
+    gapi.load('client:auth2', () => this.initClient());
   }
 
   initClient() {
