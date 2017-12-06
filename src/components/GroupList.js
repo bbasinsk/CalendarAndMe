@@ -121,8 +121,14 @@ class AddCalendarDialog extends Component {
     }
   }
 
-  getGCalendar() {
+  componentDidMount() {
+    if (gapi.auth2)
+      gapi.auth2.getAuthInstance().signOut(); //sign out of gapi
     this.handleClientLoad();
+  }
+
+  getGCalendar() {
+    this.handleAuthClick();
   }
 
   handleClientLoad() {
@@ -136,13 +142,21 @@ class AddCalendarDialog extends Component {
       discoveryDocs: Keys.DISCOVERY_DOCS,
       scope: Keys.SCOPES
     }).then(() => {
-      this.listenForAuthStatusChange();
+      // Listen for sign-in state changes.
+      gapi.auth2.getAuthInstance().isSignedIn.listen(() => this.updateSigninStatus());
+
+      // Handle the initial sign-in state.
+      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
     });
+  }
+
+  handleAuthClick() {
+    gapi.auth2.getAuthInstance().signIn();
   }
 
   listenForAuthStatusChange() {
     //  // Listen for sign-in state changes.
-     gapi.auth2.getAuthInstance().isSignedIn.listen((listen) => {
+    gapi.auth2.getAuthInstance().isSignedIn.listen((listen) => {
       this.updateSigninStatus();
     });
 
@@ -153,14 +167,14 @@ class AddCalendarDialog extends Component {
 
   updateSigninStatus(isSignedIn) {
     console.log('updating sign in status');
-    if (isSignedIn) { 
+    if (isSignedIn) {
       this.getUpcomingEvents();
     }
   }
 
   getUpcomingEvents() {
     let myEvents = [];
-  
+
     gapi.client.calendar.events.list({
       'calendarId': 'primary',
       'timeMin': (new Date()).toISOString(),
@@ -173,7 +187,7 @@ class AddCalendarDialog extends Component {
 
       let uid = firebase.auth().currentUser.uid;
       let eventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
-     
+
       if (events.length > 0) {
         for (let i = 0; i < events.length; i++) {
           console.log('event: ' + i);
@@ -188,8 +202,8 @@ class AddCalendarDialog extends Component {
       console.log('events pushed');
       gapi.auth2.getAuthInstance().signOut(); //sign out of gapi
     });
-    this.setState({events: myEvents})
-  
+    this.setState({ events: myEvents })
+
 
     return myEvents;
   }
