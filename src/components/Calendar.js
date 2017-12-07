@@ -27,8 +27,6 @@ export default class Calendar extends Component {
   }
 
   componentDidMount() {
-    // Gets a reference to the firebase events so that when they change, 
-    // they also change the current state.
     if (firebase.auth().currentUser) {
       let uid = firebase.auth().currentUser.uid;
       this.myEventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
@@ -46,6 +44,7 @@ export default class Calendar extends Component {
 
           // get groupKeys from each group in myUserGroups users
           let groupNames = Object.keys(myUserGroups);
+          console.log(groupNames);
 
           //If the user is a part of a group, set state.groupEvents = the group events
           if (myUserGroups[groupNames[0]]) {    
@@ -99,6 +98,8 @@ export default class Calendar extends Component {
         return event;
       });
     }
+
+
     
 
     const mainContentClassName = css(
