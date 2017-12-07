@@ -11,7 +11,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       loading: false
+=======
+      user: null,
+      error: null
+>>>>>>> Commiting to pull
     }
   }
 
@@ -33,22 +38,41 @@ class App extends Component {
 
 
   //A callback function for registering new users
-  handleSignUp(email, password, username) {
+  handleSignUp(email, password, confirmPassword, firstName, lastName) {
     this.setState({
-      errorMessage: null, //clear any old errors
+      error: null, //clear any old errors
       loading: true      //show loading
     });
 
-    if (username.length === 0) {
+    if (firstName.length === 0) {
+      let error = {
+        code: 'auth/invalid-firstName',
+        message: 'The first name is badly formatted or empty.'}
       this.setState({
-        errorMessage: 'Must provide username',
+        error: error,
+        loading: false
+      });
+    } else if (lastName.length === 0) {
+      let error = {
+        code: 'auth/invalid-lastName',
+        message: 'The last name is badly formatted or empty.'}
+      this.setState({
+        error: error,
+        loading: false
+      });
+    } else if (password !== confirmPassword) {
+      let error = {
+        code: 'auth/unconfirmed-password',
+        message: 'The first and second passwords do not match.'}
+      this.setState({
+        error: error,
         loading: false
       });
     } else {
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((firebaseUser) => {
           let promise = firebaseUser.updateProfile({
-            displayName: username
+            displayName: firstName + ' ' + lastName
           });
 
           return promise;
@@ -66,7 +90,7 @@ class App extends Component {
   //A callback function for logging in existing users
   handleSignIn(email, password) {
     this.setState({
-      errorMessage: null,
+      error: null,
       loading: true
     }); //clear any old errors
 
@@ -77,7 +101,7 @@ class App extends Component {
       .catch((error) => {
         console.log(error);
         this.setState({
-          errorMessage: error.message,
+          error: error,
           loading: false
         });
       });
@@ -87,7 +111,7 @@ class App extends Component {
   //A callback function for logging out the current user
   handleSignOut() {
     this.setState({
-      errorMessage: null,
+      error: null,
       loading: true
     }); //clear any old errors
 
@@ -97,7 +121,7 @@ class App extends Component {
       })
       .catch((error) => {
         this.setState({
-          errorMessage: error.message,
+          error: error,
           loading: false
         });
       });
@@ -118,8 +142,14 @@ class App extends Component {
 
     this.usersRef = firebase.database().ref('users');
     this.usersRef.update(users)
+<<<<<<< HEAD
       .catch(error => console.log(error.message));
     
+=======
+      .catch(error => console.log(error));
+
+
+>>>>>>> Commiting to pull
   }
 
 
@@ -148,6 +178,7 @@ class App extends Component {
           (<LoginForm
             {...routerProps}
             currentUser={this.state.user}
+            error={this.state.error}
             handleSignIn={(e, p) => this.handleSignIn(e, p)}
           />)}
         />
@@ -156,7 +187,8 @@ class App extends Component {
           (<SignupForm
             {...routerProps}
             currentUser={this.state.user}
-            handleSignUp={(e, p, u) => this.handleSignUp(e, p, u)}
+            error={this.state.error}
+            handleSignUp={(e, p, c, f, l) => this.handleSignUp(e, p, c, f, l)}
           />)}
         />
 

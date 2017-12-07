@@ -12,19 +12,29 @@ export default class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       drawerOpen: false
+=======
+      drawerOpen: false,
+      menuOpen: false,
+      redirect: false
+>>>>>>> Commiting to pull
     };
   }
 
   handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
 
+  handleMenuToggle = () => this.setState({ menuOpen: !this.state.menuOpen });
+
   render() {
+
+    
 
     return (
       <div>
         <AppBar
           title={this.props.title}
-          showMenuIconButton={false}
+          showMenuIconButton={this.state.menuOpen}
           // onLeftIconButtonTouchTap={() => this.handleDrawerToggle()}
           iconElementRight={<LoggedMenu handleSignOut={() => { this.props.handleSignOut() }} />}
         />
