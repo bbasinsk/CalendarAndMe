@@ -12,13 +12,8 @@ export default class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-<<<<<<< HEAD
-      drawerOpen: false
-=======
       drawerOpen: false,
-      menuOpen: false,
-      redirect: false
->>>>>>> Commiting to pull
+      menuOpen: false
     };
   }
 

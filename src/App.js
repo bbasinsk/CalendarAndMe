@@ -11,12 +11,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-<<<<<<< HEAD
-      loading: false
-=======
       user: null,
       error: null
->>>>>>> Commiting to pull
     }
   }
 
@@ -142,14 +138,9 @@ class App extends Component {
 
     this.usersRef = firebase.database().ref('users');
     this.usersRef.update(users)
-<<<<<<< HEAD
-      .catch(error => console.log(error.message));
-    
-=======
       .catch(error => console.log(error));
 
 
->>>>>>> Commiting to pull
   }
 
 
