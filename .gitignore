@@ -3,6 +3,7 @@ node_modules
 *~
 *.pyc
 .grunt
+package-lock.json
 _SpecRunner.html
 __benchmarks__
 build/
