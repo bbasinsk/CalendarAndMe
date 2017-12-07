@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Groups from './Groups';
 import AddCalendarDialog from './AddCalendarDialog';
 
 //Material UI Components
@@ -14,7 +15,7 @@ import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
 import firebase from 'firebase';
 
 
-export default class GroupList extends Component {
+export default class CalDrawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,27 +48,9 @@ export default class GroupList extends Component {
   };
 
   render() {
-
-    //converts groups into an array of group components
-    let groupIds = Object.keys(this.state.groups);
-    let groupElements = groupIds.map((id) => {
-      let group = this.state.groups[id];
-
-      return (<GroupItem
-        key={id}
-        avatarSrc={group.icon}
-        groupName={group.name}
-      />);
-    });
-
     return (
       <div>
-        <List>
-          <Subheader>My Groups</Subheader>
-          {groupElements}
-          {/* <Divider inset={true} /> */}
-          <ListItem primaryText="Create a group" rightIcon={<ContentAddCircle />} />
-        </List>
+        <Groups groups={this.state.groups} />
 
         <Divider />
 
@@ -97,17 +80,3 @@ export default class GroupList extends Component {
     );
   }
 }
-
-
-class GroupItem extends Component {
-  render() {
-    return (
-      <ListItem
-        leftAvatar={<Avatar src={this.props.avatarSrc} />}
-        primaryText={this.props.groupName}
-      // secondaryText="Jan 9, 2014"
-      />
-    );
-  }
-}
-

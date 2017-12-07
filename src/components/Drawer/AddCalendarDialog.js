@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import firebase from 'firebase/app';
 
 // import { handleClientLoad, handleAuthClick, myEvents } from '../GCalAuth';
-import * as Keys from '../gAuth/Keys';
+import * as Keys from '../../gAuth/Keys';
 let gapi = window.gapi;
 
 class AddCalendarDialog extends Component {
@@ -54,7 +54,6 @@ class AddCalendarDialog extends Component {
   }
 
   sendAuthorizedApiRequest() {
-
     if (this.isAuthorized) {
       this.getUpcomingEvents();
 
@@ -62,7 +61,6 @@ class AddCalendarDialog extends Component {
       this.GoogleAuth.signIn();
     }
   }
-
 
   updateSigninStatus(isSignedIn) {
     if (this.GoogleAuth.isSignedIn.get()) {
@@ -76,13 +74,19 @@ class AddCalendarDialog extends Component {
     }
   }
 
+  getDate() {
+    var d = new Date();
+    d.setMonth( d.getMonth() - 1, d.getDate());
+    return d;      
+}
+
   getUpcomingEvents() {
     console.log('getting upcoming events');
     let myEvents = [];
 
     gapi.client.calendar.events.list({
       'calendarId': 'primary',
-      'timeMin': (new Date()).toISOString(),
+      'timeMin': (this.getDate()).toISOString(),
       'showDeleted': false,
       'singleEvents': true,
       'maxResults': 1000,

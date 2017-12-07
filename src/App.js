@@ -128,6 +128,7 @@ class App extends Component {
       <Switch>
         <Route exact path='/' render={(routerProps) =>
           (<Calendar
+            onMobile={this.mq}
             handleSignOut={() => this.handleSignOut()}
             currentUser={this.state.user}
             conversations={this.state.conversations}
