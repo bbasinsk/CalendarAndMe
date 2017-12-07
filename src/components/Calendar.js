@@ -7,11 +7,7 @@ import Drawer from 'material-ui/Drawer';
 import CalDrawer from './Drawer/CalDrawer';
 import NavBar from './NavBar';
 
-import BigCalendar from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-
 import firebase from 'firebase/app';
-import moment from 'moment';
 
 import styles from '../styles/CalendarStyle';
 import $ from 'jquery';
@@ -97,22 +93,15 @@ export default class Calendar extends Component {
       event.title = this.state.myEvents[id].summary;
       event.start = new Date(this.state.myEvents[id].start.dateTime);
       event.end = new Date(this.state.myEvents[id].end.dateTime);
+      event.color = '#03A9F4';
       event.id = id;
       return event;
     });
-
-
 
     const mainContentClassName = css(
       styles.mainContent,
       this.state.drawerOpen && styles.leftMargin
     );
-
-    BigCalendar.setLocalizer(
-      BigCalendar.momentLocalizer(moment)
-    );
-
-    let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
 
     return (
       <div>
@@ -137,7 +126,7 @@ export default class Calendar extends Component {
 
         <main className={mainContentClassName} >
 
-          <FullCalendar />
+          <FullCalendar events={myEvents} />
 
         </main>
 
@@ -146,38 +135,37 @@ export default class Calendar extends Component {
   }
 }
 
-
-class Application extends Component {
-  render() {
-    return <div>
-      <FullCalendar /></div>;
-  }
-}
-
-/*
- * A simple React component
- */
 class FullCalendar extends Component {
   render() {
     return <div id="calendar"></div>;
   }
-  componentDidMount() {
+
+  updateCalendar() {
+    $('#calendar').fullCalendar('destroy');
     $('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			editable: true,
-			droppable: true, // this allows things to be dropped onto the calendar
-			drop: function() {
-				// is the "remove after drop" checkbox checked?
-				if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					$(this).remove();
-				}
-			}
-    })
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      events: this.props.events,
+      editable: true,
+      droppable: true, // this allows things to be dropped onto the calendar
+      drop: function () {
+        // is the "remove after drop" checkbox checked?
+        if ($('#drop-remove').is(':checked')) {
+          // if so, remove the element from the "Draggable Events" list
+          $(this).remove();
+        }
+      }
+    });
+  }
+  componentDidMount() {
+    this.updateCalendar();
+  }
+
+  componentDidUpdate() {
+    this.updateCalendar();
   }
 }
 
