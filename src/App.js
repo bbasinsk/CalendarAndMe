@@ -11,11 +11,11 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      loading: false
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.unregisterFunction = firebase.auth().onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) { // someone logged in
         this.setState({

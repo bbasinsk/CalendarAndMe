@@ -7,24 +7,18 @@ import IconButton from 'material-ui/IconButton';
 import AppBar from 'material-ui/AppBar';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-import { Redirect } from 'react-router-dom';
 
 export default class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      drawerOpen: false,
-      redirect: false
+      drawerOpen: false
     };
   }
 
   handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
 
   render() {
-    
-    if (this.state.redirect) {
-      return (<Redirect to="/conversations/" />);
-    }
 
     return (
       <div>

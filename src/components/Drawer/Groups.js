@@ -35,7 +35,7 @@ export default class Groups extends Component {
       let groupIds = Object.keys(this.props.groups);
       groupElements = groupIds.map((id) => {
         let group = this.props.groups[id];
-  
+
         return (<GroupItem
           key={id}
           avatarSrc={group.imgURL || 'https://www.drupal.org/files/issues/default-avatar.png'}
@@ -43,7 +43,7 @@ export default class Groups extends Component {
         />);
       });
     }
-    
+
 
     return (
       <div>
@@ -86,23 +86,24 @@ class NewGroupDialog extends Component {
     this.state = {}
   }
 
-  handleNewGroup(groupName, imgURL) {
+  createNewGroup(groupName, imgURL) {
     this.groupEventsRef = firebase.database().ref('groups');
 
-    this.newGroupRef = this.groupEventsRef.push({name: groupName, imgURL: imgURL || ''});
-    
+    this.newGroupRef = this.groupEventsRef.push({ name: groupName, imgURL: imgURL || '' });
+
     let groupID = this.newGroupRef.key;
 
-    let uid = firebase.auth().currentUser.uid;
+    let currentUser = firebase.auth().currentUser;
     let personalEvents = [];
-    this.userGroupsRef = firebase.database().ref('users/' + uid + '/groups/');
+    this.userGroupsRef = firebase.database().ref('users/' + currentUser.uid + '/groups/');
     this.userGroupsRef.child(groupName).set({
       key: groupID
     })
 
     this.userGroupsRef.child('personal/events/').on('value', (snapshot) => {
       personalEvents = snapshot.val();
-      this.newGroupRef.child('personalEvents').push(personalEvents);
+      this.newGroupRef.child('personalEvents/' + currentUser.uid).set(personalEvents);
+      this.newGroupRef.child('users/' + currentUser.uid).set(currentUser.displayName);
     });
 
   }
@@ -129,7 +130,7 @@ class NewGroupDialog extends Component {
               label="Create"
               primary={true}
               onClick={() => {
-                this.handleNewGroup(this.state.groupName, this.state.imgURL);
+                this.createNewGroup(this.state.groupName, this.state.imgURL);
                 this.props.handleClose();
               }}
             />,
@@ -139,7 +140,7 @@ class NewGroupDialog extends Component {
           onRequestClose={this.handleClose}
         >
           Enter a name for your new group.
-          <br/>
+          <br />
           <TextField
             floatingLabelText="Group Name"
             type="groupName"

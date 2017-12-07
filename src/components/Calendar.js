@@ -19,7 +19,7 @@ class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      events: [],
+      myEvents: [],
       drawerOpen: true,
       displayPersonalCal: true
     };
@@ -30,10 +30,10 @@ class Calendar extends Component {
     // they also change the current state.
     if (firebase.auth().currentUser) {
       let uid = firebase.auth().currentUser.uid;
-      this.eventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
-      this.eventsRef.on('value', (snapshot) => {
+      this.myEventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
+      this.myEventsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
-          this.setState({ events: snapshot.val() })
+          this.setState({ myEvents: snapshot.val() })
         }
       });
     }
@@ -41,8 +41,8 @@ class Calendar extends Component {
 
   componentWillUnmount() {
     // Closes the listener when a client is about to leave
-    if (this.eventsRef)
-      this.eventsRef.off();
+    if (this.myEventsRef)
+      this.myEventsRef.off();
   }
 
   togglePersonalCal() {
@@ -63,12 +63,12 @@ class Calendar extends Component {
     }
 
     //converts events into an array
-    let eventIds = Object.keys(this.state.events);
-    let events = eventIds.map((id) => {
+    let eventIds = Object.keys(this.state.myEvents);
+    let myEvents = eventIds.map((id) => {
       let event = {};
-      event.title = this.state.events[id].summary;
-      event.start = new Date(this.state.events[id].start.dateTime);
-      event.end = new Date(this.state.events[id].end.dateTime);
+      event.title = this.state.myEvents[id].summary;
+      event.start = new Date(this.state.myEvents[id].start.dateTime);
+      event.end = new Date(this.state.myEvents[id].end.dateTime);
       event.id = id;
       return event;
     });
@@ -90,7 +90,7 @@ class Calendar extends Component {
       <div>
         <NavBar
           title={'Calendar & Me'}
-          handleDrawerToggle={() => this.handleDrawerToggle}
+          handleDrawerToggle={() => this.handleDrawerToggle()}
           handleSignOut={() => this.props.handleSignOut()}
         />
 
@@ -111,7 +111,7 @@ class Calendar extends Component {
           <BigCalendar
             {...this.props}
             selectable
-            events={this.state.displayPersonalCal ? events : []}
+            events={this.state.displayPersonalCal ? myEvents : []}
             views={allViews}
             step={60}
             defaultDate={new Date()}

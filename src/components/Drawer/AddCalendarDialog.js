@@ -131,7 +131,7 @@ class AddCalendarDialog extends Component {
               onClick={() => this.props.handleClose()}
             />,
             <FlatButton
-              label="Start"
+              label="Login"
               primary={true}
               onClick={() => {
                 this.handleAuthClick();
@@ -143,7 +143,7 @@ class AddCalendarDialog extends Component {
           open={this.props.open}
           onRequestClose={this.handleClose}
         >
-          Click start to continue to log in to your Google Account.
+          Click login to continue to add your Google Calendar.
             </Dialog>
       </div>
     );
