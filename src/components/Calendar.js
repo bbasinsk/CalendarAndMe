@@ -20,6 +20,7 @@ class Calendar extends Component {
     super(props)
     this.state = {
       myEvents: [],
+      groupEvents: {},
       drawerOpen: true,
       displayPersonalCal: true
     };
@@ -36,6 +37,26 @@ class Calendar extends Component {
           this.setState({ myEvents: snapshot.val() })
         }
       });
+
+      this.myGroupsRef = firebase.database().ref('users/' + uid + '/groups');
+      this.myGroupsRef.on('value', (snapshot) => {
+        if (snapshot.val()) {
+          let myGroups = snapshot.val()
+          delete myGroups.personal;
+          console.log(myGroups);
+
+          // get groupKeys from each group in myGroups users
+          
+          
+
+
+
+
+
+          this.setState({groupEvents: myGroups});
+        }
+      });
+
     }
   }
 
