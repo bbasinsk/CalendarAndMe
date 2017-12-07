@@ -14,8 +14,15 @@ import firebase from 'firebase/app';
 import moment from 'moment';
 
 import styles from '../styles/CalendarStyle';
+import $ from 'jquery';
+import 'fullcalendar/dist/fullcalendar.css';
+import 'fullcalendar/dist/fullcalendar.js';
 
-class Calendar extends Component {
+// import '../styles/Calendar.css';
+
+
+
+export default class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -38,25 +45,25 @@ class Calendar extends Component {
         }
       });
 
-      this.myGroupsRef = firebase.database().ref('users/' + uid + '/groups');
-      this.myGroupsRef.on('value', (snapshot) => {
+      this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
+      this.myUserGroupsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
-          let myGroups = snapshot.val()
-          delete myGroups.personal;
-          console.log(myGroups);
+          let myUserGroups = snapshot.val()
+          delete myUserGroups.personal;
 
-          // get groupKeys from each group in myGroups users
-          
-          
+          // get groupKeys from each group in myUserGroups users
+          let groupNames = Object.keys(myUserGroups);
 
+          let groupKey = myUserGroups[groupNames[0]].key;
 
+          this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
+          this.myGroupRef.on('value', (snapshot) => {
+            console.log(snapshot.val());
+            this.setState({ groupEvents: snapshot.val() });
+          });
 
-
-
-          this.setState({groupEvents: myGroups});
         }
       });
-
     }
   }
 
@@ -129,15 +136,9 @@ class Calendar extends Component {
 
 
         <main className={mainContentClassName} >
-          <BigCalendar
-            {...this.props}
-            selectable
-            events={this.state.displayPersonalCal ? myEvents : []}
-            views={allViews}
-            step={60}
-            defaultDate={new Date()}
-            onSelectSlot={(slotInfo) => this.createGroupEvent(slotInfo)}
-          />
+
+          <FullCalendar />
+
         </main>
 
       </div>
@@ -145,4 +146,38 @@ class Calendar extends Component {
   }
 }
 
-export default Calendar;
+
+class Application extends Component {
+  render() {
+    return <div>
+      <FullCalendar /></div>;
+  }
+}
+
+/*
+ * A simple React component
+ */
+class FullCalendar extends Component {
+  render() {
+    return <div id="calendar"></div>;
+  }
+  componentDidMount() {
+    $('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			editable: true,
+			droppable: true, // this allows things to be dropped onto the calendar
+			drop: function() {
+				// is the "remove after drop" checkbox checked?
+				if ($('#drop-remove').is(':checked')) {
+					// if so, remove the element from the "Draggable Events" list
+					$(this).remove();
+				}
+			}
+    })
+  }
+}
+
