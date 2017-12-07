@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Groups from './Groups';
+import Groups from './Groups/Groups';
 import AddCalendarDialog from './AddCalendarDialog';
 
 //Material UI Components

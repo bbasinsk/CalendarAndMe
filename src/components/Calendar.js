@@ -14,9 +14,6 @@ import $ from 'jquery';
 import 'fullcalendar/dist/fullcalendar.css';
 import 'fullcalendar/dist/fullcalendar.js';
 
-// import '../styles/Calendar.css';
-
-
 
 export default class Calendar extends Component {
   constructor(props) {
@@ -50,14 +47,16 @@ export default class Calendar extends Component {
           // get groupKeys from each group in myUserGroups users
           let groupNames = Object.keys(myUserGroups);
 
-          let groupKey = myUserGroups[groupNames[0]].key;
+          //If the user is a part of a group, set state.groupEvents = the group events
+          if (myUserGroups[groupNames[0]]) {    
+            let groupKey = myUserGroups[groupNames[0]].key;
 
-          this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
-          this.myGroupRef.on('value', (snapshot) => {
-            console.log(snapshot.val());
-            this.setState({ groupEvents: snapshot.val() });
-          });
-
+            this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
+            this.myGroupRef.on('value', (snapshot) => {
+              console.log(snapshot.val());
+              this.setState({ groupEvents: snapshot.val() });
+            });
+          }
         }
       });
     }
@@ -87,16 +86,20 @@ export default class Calendar extends Component {
     }
 
     //converts events into an array
-    let eventIds = Object.keys(this.state.myEvents);
-    let myEvents = eventIds.map((id) => {
-      let event = {};
-      event.title = this.state.myEvents[id].summary;
-      event.start = new Date(this.state.myEvents[id].start.dateTime);
-      event.end = new Date(this.state.myEvents[id].end.dateTime);
-      event.color = '#03A9F4';
-      event.id = id;
-      return event;
-    });
+    let myEvents = [];
+    if (this.state.displayPersonalCal) {
+      let eventIds = Object.keys(this.state.myEvents);
+      myEvents = eventIds.map((id) => {
+        let event = {};
+        event.title = this.state.myEvents[id].summary;
+        event.start = new Date(this.state.myEvents[id].start.dateTime);
+        event.end = new Date(this.state.myEvents[id].end.dateTime);
+        event.color = '#03A9F4';
+        event.id = id;
+        return event;
+      });
+    }
+    
 
     const mainContentClassName = css(
       styles.mainContent,
