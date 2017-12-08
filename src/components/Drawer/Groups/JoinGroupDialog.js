@@ -21,24 +21,27 @@ export default class JoinGroupDialog extends Component {
     //Get group name
     let groupName = '';
     this.groupToJoinRef.child('name').on('value', (snapshot) => {
-      groupName = snapshot.val();
+      if (snapshot.val()) {
+        groupName = snapshot.val();
+
+        //Add group and key to user
+        //                       |---- groups
+        this.userGroupsRef.child(groupName + '/key').set(groupKey);
+
+        this.userGroupsRef.child('personal/events/').on('value', (snapshot) => {
+          personalEvents = snapshot.val();
+          console.log(personalEvents);
+
+          this.groupToJoinRef.child('personalEvents/' + currentUser.uid).set(personalEvents);
+          this.groupToJoinRef.child('users/' + currentUser.uid).set(currentUser.displayName);
+        });
+
+        this.userGroupsRef.off();
+        this.groupToJoinRef.off();
+      }
     });
-
-    //Add group and key to user
-    //                       |---- groups
-    this.userGroupsRef.child(groupName + '/key').set(groupKey);
-
-    this.userGroupsRef.child('personal/events/').on('value', (snapshot) => {
-      personalEvents = snapshot.val();
-      console.log(personalEvents);
-
-      this.groupToJoinRef.child('personalEvents/' + currentUser.uid).set(personalEvents);
-      this.groupToJoinRef.child('users/' + currentUser.uid).set(currentUser.displayName);
-    });
-
-    this.userGroupsRef.off();
-    this.groupToJoinRef.off();
   }
+
 
   handleTextInput(event) {
     //specify which field to change in the stage

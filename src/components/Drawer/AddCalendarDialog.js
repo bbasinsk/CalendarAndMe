@@ -43,7 +43,6 @@ class AddCalendarDialog extends Component {
 
       // // Handle the initial sign-in state.
       this.updateSigninStatus(this.GoogleAuth.isSignedIn.get());
-
     });
   }
 
@@ -102,8 +101,9 @@ class AddCalendarDialog extends Component {
       } else {
         myEvents = null;
       }
-
-      eventsRef.set(myEvents);
+      eventsRef.set(myEvents).catch((error) => {
+        console.log(error);
+      });
 
       gapi.auth2.getAuthInstance().signOut(); //sign out of gapi
     });

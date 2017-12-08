@@ -60,7 +60,10 @@ export default class Calendar extends Component {
 
     this.state = {
       myEvents: [],
-      groupEvents: {},
+      personalGroupEvents: {},
+      groupEvents: [],
+      myGroupKeys: [],
+
       drawerOpen: true,
       displayPersonalCal: true,
 
@@ -88,8 +91,11 @@ export default class Calendar extends Component {
         }
       });
 
+<<<<<<< HEAD
       // console.log(uid);
 
+=======
+>>>>>>> implemnted private groups and switching between groups
       this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myUserGroupsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
@@ -98,12 +104,18 @@ export default class Calendar extends Component {
 
           // get groupKeys from each group in myUserGroups users
           let groupNames = Object.keys(myUserGroups);
+<<<<<<< HEAD
           // console.log(groupNames);
+=======
+        
+          let groupKeys = groupNames.map((name) => {
+            return myUserGroups[name].key;
+          });
+>>>>>>> implemnted private groups and switching between groups
 
-          //If the user is a part of a group, set state.groupEvents = the group events
-          if (myUserGroups[groupNames[0]]) {
-            let groupKey = myUserGroups[groupNames[0]].key;
+          this.setState({ myGroupKeys: groupKeys});
 
+<<<<<<< HEAD
             this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
             this.myGroupRef.on('value', (snapshot) => {
               console.log(snapshot.val());
@@ -112,6 +124,11 @@ export default class Calendar extends Component {
 
 
 
+=======
+          //If the user is a part of a group, update the group events to that group
+          if (groupKeys[0]) {
+            this.updateGroupEvents(groupKeys[0]);
+>>>>>>> implemnted private groups and switching between groups
           }
         }
       });
@@ -120,9 +137,25 @@ export default class Calendar extends Component {
   }
 
   componentWillUnmount() {
-    // Closes the listener when a client is about to leave
+    console.log('closing listeners');
+    // Closes the listeners when a client is about to leave
     if (this.myEventsRef)
       this.myEventsRef.off();
+    if (this.myUserGroupsRef)
+      this.myUserGroupsRef.off();
+    if (this.myGroupRef) 
+      this.myGroupRef.off();
+  }
+
+  //Updates the states for the group events (both groupEvents and personalEvents) using the given groupKey
+  updateGroupEvents(groupKey) {
+    this.myGroupRef = firebase.database().ref('groups/' + groupKey);
+    this.myGroupRef.child('/personalEvents').on('value', (snapshot) => {
+      this.setState({ personalGroupEvents: snapshot.val() });
+    });
+    this.myGroupRef.child('/groupEvents').on('value', (snapshot) => {
+      this.setState({ groupEvents: snapshot.val() });
+    });
   }
 
   togglePersonalCal() {
@@ -199,6 +232,7 @@ export default class Calendar extends Component {
     });
   };
 
+<<<<<<< HEAD
   handleChangeStartTimePicker = (event, date) => {
     this.setState({ startTime: date });
   };
@@ -222,6 +256,9 @@ export default class Calendar extends Component {
     // console.log(this.state.startTime);
     // console.log(this.state.endTime);
 
+=======
+  getMyEvents() {
+>>>>>>> implemnted private groups and switching between groups
     //converts events into an array
     let myEvents = [];
     if (this.state.displayPersonalCal) {
@@ -232,18 +269,20 @@ export default class Calendar extends Component {
         event.title = this.state.myEvents[id].summary;
         event.start = new Date(this.state.myEvents[id].start.dateTime);
         event.end = new Date(this.state.myEvents[id].end.dateTime);
-        event.color = '#00838F';
+        event.color = '#00BCD4';
         event.rendering = '';
         event.id = id;
         return event;
       });
     }
-    // console.log(myEvents[0]);
+    return myEvents;
+  }
 
+  getPersonalGroupEvents() {
     let allPersonalGroupEvents = [];
-    let groupUsersIDs = Object.keys(this.state.groupEvents);
+    let groupUsersIDs = Object.keys(this.state.personalGroupEvents);
     for (let userID of groupUsersIDs) {
-      let userGroupEvents = this.state.groupEvents[userID];
+      let userGroupEvents = this.state.personalGroupEvents[userID];
       let eventIds = Object.keys(userGroupEvents);
       let events = eventIds.map((id) => {
         let event = {};
@@ -252,31 +291,45 @@ export default class Calendar extends Component {
         event.end = new Date(userGroupEvents[id].end.dateTime);
         event.color = '#43A047';
         event.rendering = 'background';
-        // event.id = id;
         return event;
       });
       allPersonalGroupEvents = allPersonalGroupEvents.concat(events);
     }
-    // console.log(allPersonalGroupEvents[0]);
+    return allPersonalGroupEvents;
+  }
 
-    if (myEvents[0] && allPersonalGroupEvents[0]) {
-      let mEvents = [myEvents[0], myEvents[1]];
-      let pEvents = [allPersonalGroupEvents[0], allPersonalGroupEvents[1]];
+  getGroupEvents() {
+    //converts events into an array
+    let groupEvents = [];
+    if (this.state.groupEvents) {
+      let eventIds = Object.keys(this.state.groupEvents);
+      groupEvents = eventIds.map((id) => {
+        let event = {};
+        event.type = 'groupEvents'
+        event.title = this.state.groupEvents[id].summary;
+        event.start = new Date(this.state.groupEvents[id].start.dateTime);
+        event.end = new Date(this.state.groupEvents[id].end.dateTime);
+        event.color = '#00BCD4';
+        event.rendering = '';
+        return event;
+      });
+    }
+    return groupEvents;
+  }
 
-      let concated = mEvents.concat(pEvents);
-      // console.log(concated);
+  render() {
+    if (!this.props.currentUser) {
+      return (
+        <Redirect to="/landing" />
+      );
     }
 
+    
+    let myEvents = this.getMyEvents();
+    let allPersonalGroupEvents = this.getPersonalGroupEvents();
+    let publicGroupEvents = this.getGroupEvents();
 
-    // console.log('All personal Group events: ' + allPersonalGroupEvents[0].type);
-    // console.log('My Events: ' + myEvents[0].type);
-
-    let publicGroupEvents = [];
-
-    // let eventsForCalendar = [...myEvents, ...allPersonalGroupEvents, ...publicGroupEvents];
     let eventsForCalendar = myEvents.concat(allPersonalGroupEvents, publicGroupEvents);
-
-    // console.log(eventsForCalendar);
 
 
     const mainContentClassName = css(
@@ -302,13 +355,17 @@ export default class Calendar extends Component {
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
             <div style={{ height: '64px' }} ></div>
 
-            <CalDrawer togglePersonalCal={() => this.togglePersonalCal()} />
+            <CalDrawer 
+              togglePersonalCal={() => this.togglePersonalCal()} 
+              myGroupKeys={this.state.myGroupKeys}  
+              updateGroupEvents={(key) => this.updateGroupEvents(key)}
+            />
           </Drawer>
         </div>
 
         <main className={mainContentClassName} >
 
-          <FullCalendar myEvents={eventsForCalendar} groupPersonalEvents={allPersonalGroupEvents} />
+          <FullCalendar myEvents={eventsForCalendar} />
 
         </main>
 
@@ -433,18 +490,8 @@ class FullCalendar extends Component {
         right: 'agendaWeek,agendaDay'
       },
       events: this.props.myEvents,
-      editable: true,
-      defaultView: 'agendaWeek',
-      droppable: true, // this allows things to be dropped onto the calendar
-      drop: function () {
-        // is the "remove after drop" checkbox checked?
-        if ($('#drop-remove').is(':checked')) {
-          // if so, remove the element from the "Draggable Events" list
-          $(this).remove();
-        }
-      }
+      defaultView: 'agendaWeek'
     });
-    // $('#calendar').fullCalendar( 'renderEvents', this.props.groupPersonalEvents );
   }
 
   componentDidMount() {

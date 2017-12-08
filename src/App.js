@@ -12,7 +12,8 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
-      error: null
+      error: null,
+      myGroupKeys: [],
     }
   }
 
@@ -126,24 +127,8 @@ class App extends Component {
       });
   }
 
-  addPersonalCalendar() {
-    let userID = this.state.user.uid;
-
-    // var newGroupKey = firebase.database().ref().child('').push().key;
-
-    let users = {};
-    users[userID] = {
-      displayName: this.state.user.displayName,
-      groups: {
-        personal: 'noKey'
-      }
-    };
-
-    this.usersRef = firebase.database().ref('users');
-    this.usersRef.update(users)
-      .catch(error => console.log(error));
-
-
+  setGroupKeys(groupKeys) {
+    this.setState({myGroupKeys: groupKeys});
   }
 
 
@@ -156,7 +141,7 @@ class App extends Component {
             handleSignOut={() => this.handleSignOut()}
             currentUser={this.state.user}
             conversations={this.state.conversations}
-            addPersonalCalendar={() => this.addPersonalCalendar()}
+            setGroupKeys={(keys) => this.setGroupKeys(keys)}
             {...routerProps}
           />)}
         />

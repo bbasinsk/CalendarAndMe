@@ -28,14 +28,44 @@ export default class CalDrawer extends Component {
     // Gets a reference to the firebase events so that when they change, 
     // they also change the current state.
     this.groupsRef = firebase.database().ref('groups');
-    this.groupsRef.on('value', (snapshot) => {
-      this.setState({ groups: snapshot.val() })
-    });
+    this.updateGroupKeys();
   }
+
+  componentWillReceiveProps() {
+    this.updateGroupKeys();
+  }
+
+  // componentWillUpdate() {
+  //   console.log(this.props.myGroupKeys);
+  // }
 
   componentWillUnmount() {
     // Closes the listener when a client is about to leave
     this.groupsRef.off();
+  }
+
+  updateGroupKeys() {
+    let groupKeys = this.props.myGroupKeys;
+    
+    let myGroups = [];
+    for (let i = 0; i < groupKeys.length; i++) {
+      let key = groupKeys[i];
+      
+      let group;
+      this.groupsRef.child(key).on('value', (snapshot) => { 
+        
+        if (snapshot.hasChild('name')) {
+          group = snapshot.val();
+          group.key = key;
+        }
+        if (group) {
+          myGroups.push(group);
+          this.setState({ groups: myGroups });
+        }
+      });
+    }
+
+    // this.setState({ groups: myGroups });
   }
 
   handleDialogOpen() {
@@ -48,9 +78,13 @@ export default class CalDrawer extends Component {
   };
 
   render() {
+    
     return (
       <div>
-        <Groups groups={this.state.groups} />
+        <Groups 
+          groups={this.state.groups} 
+          updateGroupEvents={(key) => this.props.updateGroupEvents(key)}
+        />
 
         <Divider />
 
