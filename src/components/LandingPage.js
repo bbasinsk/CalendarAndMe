@@ -26,8 +26,7 @@ export default class LandingPage extends Component {
           iconElementRight={<AppBarButton link='login' />}
         />
         <div className={css(styles.center)}>
-
-          <h1>{'Calendar & Me'}</h1>
+          <h1 style={styles.h1}>Calendar &amp; Me</h1>
 
           <Divider />
 
