@@ -94,16 +94,6 @@ export default class Calendar extends Component {
           let groupNames = Object.keys(myUserGroups);
           console.log(groupNames);
 
-<<<<<<< HEAD
-          let groupKey = myUserGroups[groupNames[0]].key;
-
-          this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
-          this.myGroupRef.on('value', (snapshot) => {
-            console.log(snapshot.val());
-            this.setState({ groupEvents: snapshot.val() });
-          });
-
-=======
           //If the user is a part of a group, set state.groupEvents = the group events
           if (myUserGroups[groupNames[0]]) {
             let groupKey = myUserGroups[groupNames[0]].key;
@@ -113,7 +103,6 @@ export default class Calendar extends Component {
               this.setState({ groupEvents: snapshot.val() });
             });
           }
->>>>>>> 8d8c678d74067cea641d857257f08554d9021170
         }
       });
     }
@@ -191,18 +180,6 @@ export default class Calendar extends Component {
     }
 
     //converts events into an array
-<<<<<<< HEAD
-    let eventIds = Object.keys(this.state.myEvents);
-    let myEvents = eventIds.map((id) => {
-      let event = {};
-      event.title = this.state.myEvents[id].summary;
-      event.start = new Date(this.state.myEvents[id].start.dateTime);
-      event.end = new Date(this.state.myEvents[id].end.dateTime);
-      event.color = '#03A9F4';
-      event.id = id;
-      return event;
-    });
-=======
     let myEvents = [];
     if (this.state.displayPersonalCal) {
       let eventIds = Object.keys(this.state.myEvents);
@@ -258,7 +235,6 @@ export default class Calendar extends Component {
 
     console.log(eventsForCalendar);
 
->>>>>>> 8d8c678d74067cea641d857257f08554d9021170
 
     const mainContentClassName = css(
       styles.mainContent,
@@ -288,13 +264,9 @@ export default class Calendar extends Component {
         </div>
 
         <main className={mainContentClassName} >
-<<<<<<< HEAD
-          <FullCalendar events={myEvents} />
-=======
 
           <FullCalendar myEvents={eventsForCalendar} groupPersonalEvents={allPersonalGroupEvents} />
 
->>>>>>> 8d8c678d74067cea641d857257f08554d9021170
         </main>
 
         {/* move this later */}
@@ -358,11 +330,8 @@ export default class Calendar extends Component {
               defaultDate={this.state.maxDate}
             />
             <p>Duration:</p>
-            <TextField
-              floatingLabelText="Duration"
-              name="duration"
-              onChange={(event) => this.handleTextInput(event)}
-            />
+            
+
 
           </Dialog>
         </div>
