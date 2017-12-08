@@ -36,6 +36,8 @@ export default class Calendar extends Component {
         }
       });
 
+      console.log(uid);
+
       this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myUserGroupsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
@@ -47,12 +49,11 @@ export default class Calendar extends Component {
           console.log(groupNames);
 
           //If the user is a part of a group, set state.groupEvents = the group events
-          if (myUserGroups[groupNames[0]]) {    
+          if (myUserGroups[groupNames[0]]) {
             let groupKey = myUserGroups[groupNames[0]].key;
 
             this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
             this.myGroupRef.on('value', (snapshot) => {
-              console.log(snapshot.val());
               this.setState({ groupEvents: snapshot.val() });
             });
           }
@@ -90,17 +91,56 @@ export default class Calendar extends Component {
       let eventIds = Object.keys(this.state.myEvents);
       myEvents = eventIds.map((id) => {
         let event = {};
+        event.type = 'personalCal'
         event.title = this.state.myEvents[id].summary;
         event.start = new Date(this.state.myEvents[id].start.dateTime);
         event.end = new Date(this.state.myEvents[id].end.dateTime);
-        event.color = '#03A9F4';
+        event.color = '#00838F';
+        event.rendering = '';
         event.id = id;
         return event;
       });
     }
+    console.log(myEvents[0]);
+
+    let allPersonalGroupEvents = [];
+    let groupUsersIDs = Object.keys(this.state.groupEvents);
+    for (let userID of groupUsersIDs) {
+      let userGroupEvents = this.state.groupEvents[userID];
+      let eventIds = Object.keys(userGroupEvents);
+      let events = eventIds.map((id) => {
+        let event = {};
+        event.type = 'personalGroup'
+        event.start = new Date(userGroupEvents[id].start.dateTime);
+        event.end = new Date(userGroupEvents[id].end.dateTime);
+        event.color = '#43A047';
+        event.rendering = 'background';
+        // event.id = id;
+        return event;
+      });
+      allPersonalGroupEvents = allPersonalGroupEvents.concat(events);
+    }
+    console.log(allPersonalGroupEvents[0]);
+
+    if (myEvents[0] && allPersonalGroupEvents[0]) {
+      let mEvents = [myEvents[0], myEvents[1]];
+      let pEvents = [allPersonalGroupEvents[0], allPersonalGroupEvents[1]];
+
+      let concated = mEvents.concat(pEvents);
+      console.log(concated);
+    }
 
 
-    
+    // console.log('All personal Group events: ' + allPersonalGroupEvents[0].type);
+    // console.log('My Events: ' + myEvents[0].type);
+
+    let publicGroupEvents = [];
+
+    // let eventsForCalendar = [...myEvents, ...allPersonalGroupEvents, ...publicGroupEvents];
+    let eventsForCalendar = myEvents.concat(allPersonalGroupEvents, publicGroupEvents);
+
+    console.log(eventsForCalendar);
+
 
     const mainContentClassName = css(
       styles.mainContent,
@@ -130,7 +170,7 @@ export default class Calendar extends Component {
 
         <main className={mainContentClassName} >
 
-          <FullCalendar events={myEvents} />
+          <FullCalendar myEvents={eventsForCalendar} groupPersonalEvents={allPersonalGroupEvents} />
 
         </main>
 
@@ -150,10 +190,11 @@ class FullCalendar extends Component {
       header: {
         left: 'prev,next today',
         center: 'title',
-        right: 'month,agendaWeek,agendaDay'
+        right: 'agendaWeek,agendaDay'
       },
-      events: this.props.events,
+      events: this.props.myEvents,
       editable: true,
+      defaultView: 'agendaWeek',
       droppable: true, // this allows things to be dropped onto the calendar
       drop: function () {
         // is the "remove after drop" checkbox checked?
@@ -163,7 +204,9 @@ class FullCalendar extends Component {
         }
       }
     });
+    // $('#calendar').fullCalendar( 'renderEvents', this.props.groupPersonalEvents );
   }
+
   componentDidMount() {
     this.updateCalendar();
   }
