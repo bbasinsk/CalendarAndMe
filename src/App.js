@@ -43,7 +43,8 @@ class App extends Component {
     if (firstName.length === 0) {
       let error = {
         code: 'auth/invalid-firstName',
-        message: 'The first name is badly formatted or empty.'}
+        message: 'The first name is badly formatted or empty.'
+      }
       this.setState({
         error: error,
         loading: false
@@ -51,7 +52,8 @@ class App extends Component {
     } else if (lastName.length === 0) {
       let error = {
         code: 'auth/invalid-lastName',
-        message: 'The last name is badly formatted or empty.'}
+        message: 'The last name is badly formatted or empty.'
+      }
       this.setState({
         error: error,
         loading: false
@@ -59,7 +61,8 @@ class App extends Component {
     } else if (password !== confirmPassword) {
       let error = {
         code: 'auth/unconfirmed-password',
-        message: 'The first and second passwords do not match.'}
+        message: 'The first and second passwords do not match.'
+      }
       this.setState({
         error: error,
         loading: false
@@ -101,7 +104,7 @@ class App extends Component {
           loading: false
         });
       });
-    
+
   }
 
   //A callback function for logging out the current user
@@ -125,7 +128,7 @@ class App extends Component {
 
   addPersonalCalendar() {
     let userID = this.state.user.uid;
-    
+
     // var newGroupKey = firebase.database().ref().child('').push().key;
 
     let users = {};
@@ -187,7 +190,7 @@ class App extends Component {
           (<Redirect to="/"
             {...routerProps}
           />)}
-        />        
+        />
       </Switch>
     );
   }
