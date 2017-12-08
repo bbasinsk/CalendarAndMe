@@ -49,15 +49,25 @@ export default class Calendar extends Component {
       this.myUserGroupsRef.on('value', (snapshot) => {
 
         let myUserGroups = snapshot.val()
-        delete myUserGroups.personal;
+        if (myUserGroups) {
+          delete myUserGroups.personal;
+        }
 
         this.setState({ myGroups: myUserGroups });
         console.log(this.state.myGroups);
 
         //If the user is a part of a group, update the group events to that group
-        if (myUserGroups[0]) {
-          this.updateGroupEvents(myUserGroups[0].key);
-          this.setState({ currentGroupKey: myUserGroups[0].key })
+        if (myUserGroups) {
+          let groupNames = Object.keys(myUserGroups);
+          let groupKeys = groupNames.map((name) => {
+            return myUserGroups[name].key;
+          })
+
+          this.updateGroupEvents(groupKeys[0]);
+          this.setState({ 
+            currentGroupKey: groupKeys[0],
+            currentGroupName: groupNames[0]
+          })
         }
 
       });
@@ -67,7 +77,6 @@ export default class Calendar extends Component {
   }
 
   componentWillUnmount() {
-    console.log('closing listeners');
     // Closes the listeners when a client is about to leave
     if (this.myEventsRef)
       this.myEventsRef.off();
@@ -79,11 +88,17 @@ export default class Calendar extends Component {
 
   //Updates the states for the group events (both groupEvents and personalEvents) using the given groupKey
   updateGroupEvents(groupKey) {
+    this.setState({currentGroupKey: groupKey})
+
     this.myGroupRef = firebase.database().ref('groups/' + groupKey);
+    this.myGroupRef.child('/name').on('value', (snapshot) => {
+      this.setState({
+        currentGroupName: snapshot.val()
+      });
+    });
     this.myGroupRef.child('/personalEvents').on('value', (snapshot) => {
       this.setState({
         personalGroupEvents: snapshot.val(),
-        currentGroupKey: groupKey
       });
     });
     this.myGroupRef.child('/groupEvents').on('value', (snapshot) => {
@@ -139,21 +154,25 @@ export default class Calendar extends Component {
 
   getPersonalGroupEvents() {
     let allPersonalGroupEvents = [];
-    let groupUsersIDs = Object.keys(this.state.personalGroupEvents);
-    for (let userID of groupUsersIDs) {
-      let userGroupEvents = this.state.personalGroupEvents[userID];
-      let eventIds = Object.keys(userGroupEvents);
-      let events = eventIds.map((id) => {
-        let event = {};
-        event.type = 'personalGroup'
-        event.start = new Date(userGroupEvents[id].start.dateTime);
-        event.end = new Date(userGroupEvents[id].end.dateTime);
-        event.color = '#43A047';
-        event.rendering = 'background';
-        return event;
-      });
-      allPersonalGroupEvents = allPersonalGroupEvents.concat(events);
+  
+    if (this.state.personalGroupEvents) {
+      let groupUsersIDs = Object.keys(this.state.personalGroupEvents);
+      for (let userID of groupUsersIDs) {
+        let userGroupEvents = this.state.personalGroupEvents[userID];
+        let eventIds = Object.keys(userGroupEvents);
+        let events = eventIds.map((id) => {
+          let event = {};
+          event.type = 'personalGroup'
+          event.start = new Date(userGroupEvents[id].start.dateTime);
+          event.end = new Date(userGroupEvents[id].end.dateTime);
+          event.color = '#43A047';
+          event.rendering = 'background';
+          return event;
+        });
+        allPersonalGroupEvents = allPersonalGroupEvents.concat(events);
+      }
     }
+
     return allPersonalGroupEvents;
   }
 
@@ -214,6 +233,8 @@ export default class Calendar extends Component {
               togglePersonalCal={() => this.togglePersonalCal()}
               myGroups={this.state.myGroups}
               updateGroupEvents={(key) => this.updateGroupEvents(key)}
+              groupKey={this.state.currentGroupKey}
+              currentGroupName={this.state.currentGroupName}
             />
           </Drawer>
         </div>

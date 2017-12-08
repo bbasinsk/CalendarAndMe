@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Groups from './Groups/Groups';
 import AddCalendarDialog from './AddCalendarDialog';
+import GetGroupKey from './GetGroupKey';
 
 //Material UI Components
 import { List, ListItem } from 'material-ui/List';
@@ -11,6 +12,7 @@ import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
+import ActionSearch from 'material-ui/svg-icons/action/search'
 
 import firebase from 'firebase';
 
@@ -20,7 +22,8 @@ export default class CalDrawer extends Component {
     super(props);
     this.state = {
       groups: [],
-      dialogOpen: false
+      addCalendarDialogOpen: false,
+      groupKeyDialogOpen: false
     };
   }
 
@@ -44,12 +47,10 @@ export default class CalDrawer extends Component {
 
   updateGroupKeys(myGroupsProp) {
   
-
     let groupKeys = [];
     if (myGroupsProp) {
       let groupsNames = Object.keys(myGroupsProp);
       groupKeys = groupsNames.map((groupName) => {
-        
         return myGroupsProp[groupName].key;
       });
     }
@@ -75,13 +76,21 @@ export default class CalDrawer extends Component {
     // this.setState({ groups: myGroups });
   }
 
-  handleDialogOpen() {
-    this.setState({ dialogOpen: true });
+  handleAddCalendarDialogOpen() {
+    this.setState({ addCalendarDialogOpen: true });
   };
 
-  handleDialogClose() {
-    this.setState({ dialogOpen: false });
+  handleAddCalendarDialogClose() {
+    this.setState({ addCalendarDialogOpen: false });
     window.gapi.auth2.getAuthInstance().signOut();
+  };
+
+  handleGroupKeyDialogOpen() {
+    this.setState({ groupKeyDialogOpen: true });
+  };
+
+  handleGroupKeyDialogClose() {
+    this.setState({ groupKeyDialogOpen: false });
   };
 
   render() {
@@ -108,14 +117,30 @@ export default class CalDrawer extends Component {
           <ListItem
             primaryText="Add my calendar"
             rightIcon={<ContentAddCircle />}
-            onClick={() => this.handleDialogOpen()}
+            onClick={() => this.handleAddCalendarDialogOpen()}
           />
         </List>
         <AddCalendarDialog
-          handleClose={() => this.handleDialogClose()}
-          handleOpen={() => this.handleDialogOpen()}
-          open={this.state.dialogOpen}
+          handleClose={() => this.handleAddCalendarDialogClose()}
+          handleOpen={() => this.handleAddCalendarDialogOpen()}
+          open={this.state.addCalendarDialogOpen}
           addPersonalCalendar={() => this.props.addPersonalCalendar()}
+        />
+        <Divider />
+        <List>
+          <Subheader>Share My Group</Subheader>
+          <ListItem
+          primaryText="Get Group Key"
+          rightIcon={<ActionSearch />}
+          onClick={() => this.handleGroupKeyDialogOpen()}
+        />
+        </List>
+        <GetGroupKey 
+          groupKey={this.props.groupKey}
+          open={this.state.groupKeyDialogOpen}
+          handleClose={() => this.handleGroupKeyDialogClose()}
+          handleOpen={() => this.handleGroupKeyDialogOpen()}
+          currentGroupName={this.props.currentGroupName}
         />
       </div>
     );
