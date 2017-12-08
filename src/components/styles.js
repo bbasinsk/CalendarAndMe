@@ -8,16 +8,6 @@ export default {
         alignItems: 'center',
         display: 'flex'
     },
-    view: {
-        height: '50%',
-        width: '50%',
-        borderRadius: '5%',
-        backgroundColor: '#cfebfd',
-        opacity: "0.8",
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
     h4: {
         color: 'white',
         marginTop: '10%',
