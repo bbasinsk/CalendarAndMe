@@ -3,10 +3,10 @@ import { StyleSheet, css } from 'aphrodite';
 import { Link } from 'react-router-dom'; //React router
 
 import { AppBarButton } from './UserAuth';
-
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
+import styles from './styles';
 
 export default class LandingPage extends Component {
   render() {
