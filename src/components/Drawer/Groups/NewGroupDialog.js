@@ -24,7 +24,7 @@ export default class NewGroupDialog extends Component {
       this.userGroupsRef = firebase.database().ref('users/' + currentUser.uid + '/groups/');
       this.userGroupsRef.child(groupName).set({
         key: groupID
-      })
+      });
   
       this.userGroupsRef.child('personal/events/').on('value', (snapshot) => {
         personalEvents = snapshot.val();

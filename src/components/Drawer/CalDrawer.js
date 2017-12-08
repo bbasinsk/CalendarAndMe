@@ -29,23 +29,30 @@ export default class CalDrawer extends Component {
     // they also change the current state.
     this.groupsRef = firebase.database().ref('groups');
     this.updateGroupKeys();
+    console.log('component will mount');
+    console.log(this.props.myGroups);
   }
 
-  componentWillReceiveProps() {
-    this.updateGroupKeys();
+  componentWillReceiveProps(props) {
+    this.updateGroupKeys(props.myGroups);
   }
-
-  // componentWillUpdate() {
-  //   console.log(this.props.myGroupKeys);
-  // }
 
   componentWillUnmount() {
     // Closes the listener when a client is about to leave
     this.groupsRef.off();
   }
 
-  updateGroupKeys() {
-    let groupKeys = this.props.myGroupKeys;
+  updateGroupKeys(myGroupsProp) {
+  
+
+    let groupKeys = [];
+    if (myGroupsProp) {
+      let groupsNames = Object.keys(myGroupsProp);
+      groupKeys = groupsNames.map((groupName) => {
+        
+        return myGroupsProp[groupName].key;
+      });
+    }
     
     let myGroups = [];
     for (let i = 0; i < groupKeys.length; i++) {

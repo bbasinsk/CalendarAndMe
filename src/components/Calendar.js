@@ -24,7 +24,7 @@ export default class Calendar extends Component {
       myEvents: [],
       personalGroupEvents: {},
       groupEvents: [],
-      myGroupKeys: [],
+      myGroups: [],
 
       drawerOpen: true,
       displayPersonalCal: true,
@@ -35,39 +35,35 @@ export default class Calendar extends Component {
 
 
   componentDidMount() {
-    if (firebase.auth().currentUser) {
-      let uid = firebase.auth().currentUser.uid;
+    if (this.props.currentUser) {
+      let uid = this.props.currentUser.uid;
+      this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myEventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
+
       this.myEventsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
           this.setState({ myEvents: snapshot.val() })
         }
       });
 
-      this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myUserGroupsRef.on('value', (snapshot) => {
-        if (snapshot.val()) {
-          let myUserGroups = snapshot.val()
-          delete myUserGroups.personal;
 
-          // get groupKeys from each group in myUserGroups users
-          let groupNames = Object.keys(myUserGroups);
-        
-          let groupKeys = groupNames.map((name) => {
-            return myUserGroups[name].key;
-          });
+        let myUserGroups = snapshot.val()
+        delete myUserGroups.personal;
 
-          this.setState({ myGroupKeys: groupKeys});
+        this.setState({ myGroups: myUserGroups });
+        console.log(this.state.myGroups);
 
-          //If the user is a part of a group, update the group events to that group
-          if (groupKeys[0]) {
-            this.updateGroupEvents(groupKeys[0]);
-            this.setState({currentGroupKey: groupKeys[0]})
-          }
+        //If the user is a part of a group, update the group events to that group
+        if (myUserGroups[0]) {
+          this.updateGroupEvents(myUserGroups[0].key);
+          this.setState({ currentGroupKey: myUserGroups[0].key })
         }
+
       });
 
     }
+
   }
 
   componentWillUnmount() {
@@ -77,7 +73,7 @@ export default class Calendar extends Component {
       this.myEventsRef.off();
     if (this.myUserGroupsRef)
       this.myUserGroupsRef.off();
-    if (this.myGroupRef) 
+    if (this.myGroupRef)
       this.myGroupRef.off();
   }
 
@@ -85,9 +81,9 @@ export default class Calendar extends Component {
   updateGroupEvents(groupKey) {
     this.myGroupRef = firebase.database().ref('groups/' + groupKey);
     this.myGroupRef.child('/personalEvents').on('value', (snapshot) => {
-      this.setState({ 
+      this.setState({
         personalGroupEvents: snapshot.val(),
-        currentGroupKey: groupKey 
+        currentGroupKey: groupKey
       });
     });
     this.myGroupRef.child('/groupEvents').on('value', (snapshot) => {
@@ -106,11 +102,11 @@ export default class Calendar extends Component {
   }
 
   handleNewEventDialogOpen(start, end) {
-    this.setState({ 
+    this.setState({
       newEventDialogOpen: true,
       newEventStart: moment(start).format(),
       newEventEnd: moment(end).format()
-     });
+    });
   }
 
   handleNewEventDialogClose = () => {
@@ -118,7 +114,7 @@ export default class Calendar extends Component {
   };
 
   createGroupEvent(start, end) {
-    console.log('start: '+ start + 'end: ' + end);
+    console.log('start: ' + start + 'end: ' + end);
   }
 
   getMyEvents() {
@@ -179,7 +175,7 @@ export default class Calendar extends Component {
     }
     return groupEvents;
   }
- 
+
 
   render() {
     if (!this.props.currentUser) {
@@ -187,7 +183,7 @@ export default class Calendar extends Component {
         <Redirect to="/landing" />
       );
     }
-    
+
     //Get all events and concatenate them together to pass to fullcalendar
     let myEvents = this.getMyEvents();
     let allPersonalGroupEvents = this.getPersonalGroupEvents();
@@ -214,9 +210,9 @@ export default class Calendar extends Component {
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
             <div style={{ height: '64px' }} ></div>
 
-            <CalDrawer 
-              togglePersonalCal={() => this.togglePersonalCal()} 
-              myGroupKeys={this.state.myGroupKeys}  
+            <CalDrawer
+              togglePersonalCal={() => this.togglePersonalCal()}
+              myGroups={this.state.myGroups}
               updateGroupEvents={(key) => this.updateGroupEvents(key)}
             />
           </Drawer>
@@ -224,14 +220,14 @@ export default class Calendar extends Component {
 
         <main className={mainContentClassName} >
 
-          <FullCalendar 
+          <FullCalendar
             myEvents={eventsForCalendar}
             createNewEvent={(start, end) => {
               this.handleNewEventDialogOpen(start, end);
             }}
           />
 
-          <CreateGroupEvent 
+          <CreateGroupEvent
             open={this.state.newEventDialogOpen}
             start={this.state.newEventStart}
             end={this.state.newEventEnd}
