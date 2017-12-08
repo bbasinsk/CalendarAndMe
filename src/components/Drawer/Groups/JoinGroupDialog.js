@@ -16,12 +16,22 @@ export default class JoinGroupDialog extends Component {
     let currentUser = firebase.auth().currentUser;
     let personalEvents = [];
     this.userGroupsRef = firebase.database().ref('users/' + currentUser.uid + '/groups/');
-    
+    this.groupToJoinRef = firebase.database().ref('groups/' + groupKey);
+
+    //Get group name
+    let groupName = '';
+    this.groupToJoinRef.child('name').on('value', (snapshot) => {
+      groupName = snapshot.val();
+    });
+
+    //Add group and key to user
+    //                       |---- groups
+    this.userGroupsRef.child(groupName + '/key').set(groupKey);
+
     this.userGroupsRef.child('personal/events/').on('value', (snapshot) => {
       personalEvents = snapshot.val();
       console.log(personalEvents);
 
-      this.groupToJoinRef = firebase.database().ref('groups/' + groupKey);
       this.groupToJoinRef.child('personalEvents/' + currentUser.uid).set(personalEvents);
       this.groupToJoinRef.child('users/' + currentUser.uid).set(currentUser.displayName);
     });

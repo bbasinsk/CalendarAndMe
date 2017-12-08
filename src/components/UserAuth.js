@@ -44,7 +44,6 @@ export class LoginForm extends Component {
     }
 
     
-    console.log(this.props.error);
     let errorMessage= null;
     
     if (this.props.error !== null) {
