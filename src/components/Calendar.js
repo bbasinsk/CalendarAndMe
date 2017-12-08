@@ -19,7 +19,7 @@ import 'fullcalendar/dist/fullcalendar.js';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import SelectField from 'material-ui/SelectField';
+// import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
 // temporary
@@ -27,6 +27,8 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
+// import Slider from 'material-ui/Slider';
+import TimePicker from 'material-ui/TimePicker';
 
 const timesOfDay = [
   'AM',
@@ -49,12 +51,12 @@ export default class Calendar extends Component {
   constructor(props) {
     super(props)
 
-    const minDate = new Date();
-    const maxDate = new Date();
-    minDate.setFullYear(minDate.getFullYear() - 1);
-    minDate.setHours(0, 0, 0, 0);
-    maxDate.setFullYear(maxDate.getFullYear() + 1);
-    maxDate.setHours(0, 0, 0, 0);
+    const startDate = new Date();
+    const endDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setFullYear(endDate.getFullYear() + 1);
+    endDate.setHours(0, 0, 0, 0);
 
     this.state = {
       myEvents: [],
@@ -63,10 +65,14 @@ export default class Calendar extends Component {
       displayPersonalCal: true,
 
       dialogOpen: false,
-      dayValues: [],
-      timeValues: [],
-      minDate: minDate,
-      maxDate: maxDate,
+      // dayValues: [],
+      // timeValues: [],
+      startDate: startDate,
+      endDate: endDate,
+      durationTime: 0,
+      startTime: null,
+      endTime: null,
+      name: '',
 
     };
   }
@@ -82,7 +88,7 @@ export default class Calendar extends Component {
         }
       });
 
-      console.log(uid);
+      // console.log(uid);
 
       this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myUserGroupsRef.on('value', (snapshot) => {
@@ -92,7 +98,7 @@ export default class Calendar extends Component {
 
           // get groupKeys from each group in myUserGroups users
           let groupNames = Object.keys(myUserGroups);
-          console.log(groupNames);
+          // console.log(groupNames);
 
           //If the user is a part of a group, set state.groupEvents = the group events
           if (myUserGroups[groupNames[0]]) {
@@ -100,11 +106,16 @@ export default class Calendar extends Component {
 
             this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
             this.myGroupRef.on('value', (snapshot) => {
+              console.log(snapshot.val());
               this.setState({ groupEvents: snapshot.val() });
             });
+
+
+
           }
         }
       });
+
     }
   }
 
@@ -121,7 +132,23 @@ export default class Calendar extends Component {
   }
 
   createGroupEvent(eventInfo) {
-    console.log(eventInfo);
+    let start = {};
+    
+    
+    let newEvent = {
+      name: this.state.name,
+
+    }
+
+    //get key of current group
+    let groupKey;
+
+    let groupEventRef = firebase.database().ref('groups/' + groupKey + '/groupEvents');
+     
+    //push new event into this 
+    let groupEventKey = groupEventRef.push().key;;
+
+
   }
 
   handleOpen() {
@@ -160,17 +187,29 @@ export default class Calendar extends Component {
     ));
   }
 
-  handleChangeMinDate = (event, date) => {
+  handleChangeStartDate = (event, date) => {
     this.setState({
-      minDate: date,
+      startDate: date,
     });
   };
 
-  handleChangeMaxDate = (event, date) => {
+  handleChangeEndDate = (event, date) => {
     this.setState({
-      maxDate: date,
+      endDate: date,
     });
   };
+
+  handleChangeStartTimePicker = (event, date) => {
+    this.setState({ startTime: date });
+  };
+
+  handleChangeEndTimePicker = (event, date) => {
+    this.setState({ endTime: date });
+  };
+
+  handleTextInput(event) {
+    this.setState({ name: event.target.value });
+  }
 
   render() {
     if (!this.props.currentUser) {
@@ -178,6 +217,10 @@ export default class Calendar extends Component {
         <Redirect to="/landing" />
       );
     }
+
+
+    // console.log(this.state.startTime);
+    // console.log(this.state.endTime);
 
     //converts events into an array
     let myEvents = [];
@@ -195,7 +238,7 @@ export default class Calendar extends Component {
         return event;
       });
     }
-    console.log(myEvents[0]);
+    // console.log(myEvents[0]);
 
     let allPersonalGroupEvents = [];
     let groupUsersIDs = Object.keys(this.state.groupEvents);
@@ -214,14 +257,14 @@ export default class Calendar extends Component {
       });
       allPersonalGroupEvents = allPersonalGroupEvents.concat(events);
     }
-    console.log(allPersonalGroupEvents[0]);
+    // console.log(allPersonalGroupEvents[0]);
 
     if (myEvents[0] && allPersonalGroupEvents[0]) {
       let mEvents = [myEvents[0], myEvents[1]];
       let pEvents = [allPersonalGroupEvents[0], allPersonalGroupEvents[1]];
 
       let concated = mEvents.concat(pEvents);
-      console.log(concated);
+      // console.log(concated);
     }
 
 
@@ -233,7 +276,7 @@ export default class Calendar extends Component {
     // let eventsForCalendar = [...myEvents, ...allPersonalGroupEvents, ...publicGroupEvents];
     let eventsForCalendar = myEvents.concat(allPersonalGroupEvents, publicGroupEvents);
 
-    console.log(eventsForCalendar);
+    // console.log(eventsForCalendar);
 
 
     const mainContentClassName = css(
@@ -300,7 +343,42 @@ export default class Calendar extends Component {
             autoScrollBodyContent={true}
           >
             <h2>Event Details</h2>
-            <p>Preferred Day(s):</p>
+            <TextField
+            floatingLabelText="Event Name"
+            name="eventName"
+            onChange={(event) => this.handleTextInput(event)}
+          />
+            Date
+            <DatePicker
+              onChange={this.handleChangeStartDate}
+              floatingLabelText="Start Date"
+              defaultDate={this.state.startDate}
+            />
+            <DatePicker
+              onChange={this.handleChangeEndDate}
+              floatingLabelText="End Date"
+              defaultDate={this.state.endDate}
+            />
+            <p>Time</p>
+            <TimePicker
+              format="ampm"
+              hintText="Start Time"
+              value={this.state.startTime}
+              minutesStep={5}
+              onChange={this.handleChangeStartTimePicker}
+            />
+            <TimePicker
+              format="ampm"
+              hintText="End Time"
+              value={this.state.endTime}
+              minutesStep={5}
+              onChange={this.handleChangeEndTimePicker}
+            />
+
+
+
+
+            {/* <p>Preferred Day(s):</p>
             <SelectField
               multiple={true}
               hintText="Select preferred day(s)"
@@ -319,19 +397,18 @@ export default class Calendar extends Component {
             </SelectField>
 
             <p>Time Span:</p>
-            <DatePicker
-              onChange={this.handleChangeMinDate}
-              floatingLabelText="Min Date"
-              defaultDate={this.state.minDate}
-            />
-            <DatePicker
-              onChange={this.handleChangeMaxDate}
-              floatingLabelText="Max Date"
-              defaultDate={this.state.maxDate}
-            />
-            <p>Duration:</p>
-            
 
+
+            <p>Duration:</p>
+            <Slider
+              min={0}
+              max={12}
+              step={0.5}
+              value={this.state.durationTime}
+              onChange={this.handleSecondSlider}
+            />
+            <span>{'The value of this slider is: '}</span>
+            <span>{this.state.durationTime}</span> */}
 
           </Dialog>
         </div>
