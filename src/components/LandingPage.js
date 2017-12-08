@@ -31,7 +31,7 @@ export default class LandingPage extends Component {
 
           <Divider />
 
-          <p>Some sentence about signing up today</p>
+          <p>Easily schedule meetings and plan group events all in one place!</p>
           <Link to='/join' >
             <RaisedButton
               label="Get Started"
