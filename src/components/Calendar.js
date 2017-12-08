@@ -91,11 +91,6 @@ export default class Calendar extends Component {
         }
       });
 
-<<<<<<< HEAD
-      // console.log(uid);
-
-=======
->>>>>>> implemnted private groups and switching between groups
       this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myUserGroupsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
@@ -104,31 +99,16 @@ export default class Calendar extends Component {
 
           // get groupKeys from each group in myUserGroups users
           let groupNames = Object.keys(myUserGroups);
-<<<<<<< HEAD
-          // console.log(groupNames);
-=======
         
           let groupKeys = groupNames.map((name) => {
             return myUserGroups[name].key;
           });
->>>>>>> implemnted private groups and switching between groups
 
           this.setState({ myGroupKeys: groupKeys});
 
-<<<<<<< HEAD
-            this.myGroupRef = firebase.database().ref('groups/' + groupKey + '/personalEvents');
-            this.myGroupRef.on('value', (snapshot) => {
-              console.log(snapshot.val());
-              this.setState({ groupEvents: snapshot.val() });
-            });
-
-
-
-=======
           //If the user is a part of a group, update the group events to that group
           if (groupKeys[0]) {
             this.updateGroupEvents(groupKeys[0]);
->>>>>>> implemnted private groups and switching between groups
           }
         }
       });
@@ -232,7 +212,6 @@ export default class Calendar extends Component {
     });
   };
 
-<<<<<<< HEAD
   handleChangeStartTimePicker = (event, date) => {
     this.setState({ startTime: date });
   };
@@ -245,20 +224,7 @@ export default class Calendar extends Component {
     this.setState({ name: event.target.value });
   }
 
-  render() {
-    if (!this.props.currentUser) {
-      return (
-        <Redirect to="/landing" />
-      );
-    }
-
-
-    // console.log(this.state.startTime);
-    // console.log(this.state.endTime);
-
-=======
   getMyEvents() {
->>>>>>> implemnted private groups and switching between groups
     //converts events into an array
     let myEvents = [];
     if (this.state.displayPersonalCal) {
@@ -316,6 +282,7 @@ export default class Calendar extends Component {
     }
     return groupEvents;
   }
+ 
 
   render() {
     if (!this.props.currentUser) {
@@ -409,12 +376,12 @@ export default class Calendar extends Component {
             <DatePicker
               onChange={this.handleChangeStartDate}
               floatingLabelText="Start Date"
-              defaultDate={this.state.startDate}
+              defaultDate={new Date()}
             />
             <DatePicker
               onChange={this.handleChangeEndDate}
               floatingLabelText="End Date"
-              defaultDate={this.state.endDate}
+              defaultDate={new Date()}
             />
             <p>Time</p>
             <TimePicker
