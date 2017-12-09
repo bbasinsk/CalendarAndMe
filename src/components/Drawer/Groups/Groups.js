@@ -8,7 +8,7 @@ import { List, ListItem, makeSelectable } from 'material-ui/List';
 import PropTypes from 'prop-types';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import ContentAddCircle from 'material-ui/svg-icons/content/add-circle';
+import { ContentAddBox, ContentAdd } from 'material-ui/svg-icons';
 
 
 export default class Groups extends Component {
@@ -73,13 +73,13 @@ export default class Groups extends Component {
           
           {/* <Divider inset={true} /> */}
           <ListItem
-            primaryText="Create a group"
-            rightIcon={<ContentAddCircle />}
+            primaryText="Create A Group"
+            rightIcon={<ContentAddBox />}
             onClick={() => this.handleNewGroupDialogOpen()}
           />
           <ListItem
-            primaryText="Join a group"
-            rightIcon={<ContentAddCircle />}
+            primaryText="Join A Group"
+            rightIcon={<ContentAdd />}
             onClick={() => this.handleJoinGroupDialogOpen()}
           />
         </List>

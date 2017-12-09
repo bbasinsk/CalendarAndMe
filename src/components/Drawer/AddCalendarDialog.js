@@ -117,7 +117,7 @@ class AddCalendarDialog extends Component {
     return (
       <div>
         <Dialog
-          title="Add your Google Calendar"
+          title="Update Your Google Calendar"
           actions={[
             <FlatButton
               label="Cancel"
@@ -137,7 +137,7 @@ class AddCalendarDialog extends Component {
           open={this.props.open}
           onRequestClose={this.handleClose}
         >
-          Click login to continue to add your Google Calendar.
+          Click login to continue to update your Google Calendar.
             </Dialog>
       </div>
     );

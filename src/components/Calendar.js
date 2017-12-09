@@ -3,6 +3,7 @@ import { css } from 'aphrodite';
 import { Redirect } from 'react-router-dom';
 
 import Drawer from 'material-ui/Drawer';
+import Snackbar from 'material-ui/Snackbar';
 
 import CalDrawer from './Drawer/CalDrawer';
 import NavBar from './NavBar';
@@ -27,6 +28,7 @@ export default class Calendar extends Component {
       myGroups: [],
 
       drawerOpen: true,
+      copied: false,
       displayPersonalCal: true,
 
       newEventDialogOpen: false,
@@ -40,36 +42,38 @@ export default class Calendar extends Component {
       this.myUserGroupsRef = firebase.database().ref('users/' + uid + '/groups');
       this.myEventsRef = firebase.database().ref('users/' + uid + '/groups/personal/events/');
 
+      // users/uid/groups/personal/events/
       this.myEventsRef.on('value', (snapshot) => {
         if (snapshot.val()) {
           this.setState({ myEvents: snapshot.val() })
         }
       });
 
+      // users/uid/groups/
       this.myUserGroupsRef.on('value', (snapshot) => {
 
-        let myUserGroups = snapshot.val()
+        let myUserGroups = snapshot.val();
         if (myUserGroups) {
           delete myUserGroups.personal;
         }
 
         this.setState({ myGroups: myUserGroups });
-        console.log(this.state.myGroups);
 
         //If the user is a part of a group, update the group events to that group
         if (myUserGroups) {
           let groupNames = Object.keys(myUserGroups);
           let groupKeys = groupNames.map((name) => {
             return myUserGroups[name].key;
-          })
+          });
 
-          this.updateGroupEvents(groupKeys[0]);
-          this.setState({ 
-            currentGroupKey: groupKeys[0],
-            currentGroupName: groupNames[0]
-          })
+          if (groupKeys && groupKeys.length >= 1) {
+            this.updateGroupEvents(groupKeys[0]);
+            this.setState({ 
+              currentGroupKey: groupKeys[0],
+              currentGroupName: groupNames[0]
+            })
+          }
         }
-
       });
 
     }
@@ -127,6 +131,14 @@ export default class Calendar extends Component {
   handleNewEventDialogClose = () => {
     this.setState({ newEventDialogOpen: false });
   };
+
+  handleCopiedOpen() {
+    this.setState({copied: true});
+  }
+
+  handleCopiedClose() {
+    this.setState({copied: false});
+  }
 
   createGroupEvent(start, end) {
     console.log('start: ' + start + 'end: ' + end);
@@ -235,6 +247,7 @@ export default class Calendar extends Component {
               updateGroupEvents={(key) => this.updateGroupEvents(key)}
               groupKey={this.state.currentGroupKey}
               currentGroupName={this.state.currentGroupName}
+              handleCopiedOpen={() => this.handleCopiedOpen()}
             />
           </Drawer>
         </div>
@@ -257,6 +270,13 @@ export default class Calendar extends Component {
           />
 
         </main>
+
+        <Snackbar
+          open={this.state.copied}
+          message="Group key copied to clipboard"
+          autoHideDuration={3000}
+          onRequestClose={() => this.handleCopiedClose()}
+        />
 
       </div>
     );

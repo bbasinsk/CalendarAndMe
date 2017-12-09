@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import GoogleCalLogin from './components/GoogleCalLogin';
 
 import firebase from 'firebase';
 
@@ -14,6 +15,7 @@ class App extends Component {
       user: null,
       error: null,
       myGroupKeys: [],
+      gLogin: false
     }
   }
 
@@ -75,6 +77,8 @@ class App extends Component {
             displayName: firstName + ' ' + lastName
           });
 
+          this.setState({ gLogin: true });
+
           return promise;
         })
         .catch((error) => {
@@ -128,11 +132,22 @@ class App extends Component {
   }
 
   setGroupKeys(groupKeys) {
-    this.setState({myGroupKeys: groupKeys});
+    this.setState({ myGroupKeys: groupKeys });
+  }
+
+  googleLoggedIn() {
+    this.setState({gLogin: false});
   }
 
 
   render() {
+    if (this.state.gLogin) {
+      this.setState({gLogin: false});
+      return (
+        <Redirect to='/gLogin' />
+      );
+    }
+
     return (
       <Switch>
         <Route exact path='/' render={(routerProps) =>
@@ -168,6 +183,14 @@ class App extends Component {
             currentUser={this.state.user}
             error={this.state.error}
             handleSignUp={(e, p, c, f, l) => this.handleSignUp(e, p, c, f, l)}
+          />)}
+        />
+
+        <Route path='/glogin' render={(routerProps) =>
+          (<GoogleCalLogin
+            {...routerProps}
+            handleSignOut={() => this.handleSignOut()}
+            googleLoggedIn={() => this.googleLoggedIn()}
           />)}
         />
 

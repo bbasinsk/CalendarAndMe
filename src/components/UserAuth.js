@@ -106,7 +106,7 @@ export class SignupForm extends Component {
     }
   }
 
-  //A callback function for logging in existing users
+  
   handleSignUp() {
     this.props.handleSignUp(this.state.email,
       this.state.password,
@@ -129,11 +129,12 @@ export class SignupForm extends Component {
   }
 
   render() {
+
     if (this.props.currentUser) {
       return (<Redirect to={'/'} />);
     }
+    
 
-    console.log(this.props.error);
     let errorMessage= {
       email:null,
       password:null

@@ -3,3 +3,4 @@ export const CLIENT_ID = '102064689248-o3qlmteieihkoglbuune10e4gl6a85gq.apps.goo
 export const CLIENT_SECRET = '1DRxT6MTxuUNvD4beDqPmJz5';
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 export const SCOPES = "https://www.googleapis.com/auth/calendar";
+export const REDIRECT_URL = 'http://localhost:3000/'

@@ -18,7 +18,6 @@ export default class NavBar extends Component {
   }
 
   handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
-
   handleMenuToggle = () => this.setState({ menuOpen: !this.state.menuOpen });
 
   render() {
@@ -37,7 +36,6 @@ export default class NavBar extends Component {
 }
 
 class LoggedMenu extends Component {
-
   render() {
     return (
       <IconMenu

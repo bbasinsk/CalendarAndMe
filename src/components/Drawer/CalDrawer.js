@@ -11,7 +11,7 @@ import Toggle from 'material-ui/Toggle';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
+import Cached from 'material-ui/svg-icons/action/cached';
 import ActionSearch from 'material-ui/svg-icons/action/search'
 
 import firebase from 'firebase';
@@ -32,8 +32,6 @@ export default class CalDrawer extends Component {
     // they also change the current state.
     this.groupsRef = firebase.database().ref('groups');
     this.updateGroupKeys();
-    console.log('component will mount');
-    console.log(this.props.myGroups);
   }
 
   componentWillReceiveProps(props) {
@@ -115,8 +113,8 @@ export default class CalDrawer extends Component {
               />}
           />
           <ListItem
-            primaryText="Add my calendar"
-            rightIcon={<ContentAddCircle />}
+            primaryText="Update My Calendar"
+            rightIcon={<Cached />}
             onClick={() => this.handleAddCalendarDialogOpen()}
           />
         </List>
@@ -141,6 +139,7 @@ export default class CalDrawer extends Component {
           handleClose={() => this.handleGroupKeyDialogClose()}
           handleOpen={() => this.handleGroupKeyDialogOpen()}
           currentGroupName={this.props.currentGroupName}
+          handleCopiedOpen={() => this.props.handleCopiedOpen()}
         />
       </div>
     );
