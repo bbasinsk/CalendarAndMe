@@ -212,7 +212,7 @@ export class SignupForm extends Component {
             /><br />
             <RaisedButton
               className='auth-button'
-              label="Sign Up"
+              label="Submit"
               primary={true}
               onClick={() => this.handleSignUp()} />
           </Paper>

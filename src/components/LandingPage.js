@@ -26,11 +26,11 @@ export default class LandingPage extends Component {
           iconElementRight={<AppBarButton link='login' />}
         />
         <div className={css(styles.center)}>
-          <h1 style={styles.h1}>Calendar &amp; Me</h1>
+          <h1 style={styles.h1}>Get organized and stay on schedule</h1>
 
           <Divider />
 
-          <p>Easily schedule meetings and plan group events all in one place!</p>
+          <p>Easily manage meetings and plan group events all in one place!</p>
           <Link to='/join' >
             <RaisedButton
               label="Get Started"

@@ -1,8 +1,10 @@
+import backgroundImage from '../images/seattle.jpg';
+
 export default {
     background: {
         height: '100vh',
         width: '100vw',
-        // backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         justifyContent: 'center',
         alignItems: 'center',
@@ -11,11 +13,11 @@ export default {
     h4: {
         color: 'white',
         marginTop: '10%',
-        fontFamily: "'Merriweather', serif"
+        fontFamily: "'Helvetica', serif"
     },
     h5: {
         color: 'yellow',
-        fontFamily: "'Lobster', cursive",
+        fontFamily: "'Helvetica', cursive",
         marginTop: '10%',
     },
 
