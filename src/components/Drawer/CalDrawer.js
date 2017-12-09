@@ -9,10 +9,10 @@ import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import Subheader from 'material-ui/Subheader';
-import Avatar from 'material-ui/Avatar';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import ActionEvent from 'material-ui/svg-icons/action/event';
 import Cached from 'material-ui/svg-icons/action/cached';
 import ActionSearch from 'material-ui/svg-icons/action/search'
+import {cyan500} from 'material-ui/styles/colors';
 
 import firebase from 'firebase';
 
@@ -105,8 +105,8 @@ export default class CalDrawer extends Component {
         <List>
           <Subheader>My Calendars</Subheader>
           <ListItem
-            leftAvatar={<Avatar icon={<ActionAssignment/>} />} 
-            primaryText="Google Calendar"
+            leftIcon={<ActionEvent color={cyan500}/>} 
+            primaryText="G Calendar"
             rightToggle={<Toggle 
                 onClick={() => this.props.togglePersonalCal()}
                 defaultToggled={true}
