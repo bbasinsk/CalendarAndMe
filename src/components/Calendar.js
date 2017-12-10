@@ -75,9 +75,17 @@ export default class Calendar extends Component {
           }
         }
       });
-
     }
+  }
 
+  componentWillMount() {
+    window.addEventListener('resize', () => this.handleWindowSizeChange());
+    
+    if (window.innerWidth < 750) {
+      this.setState({drawerOpen: false, mobile: true});
+    } else {
+      this.setState({drawerOpen: true, mobile: false});
+    }
   }
 
   componentWillUnmount() {
@@ -88,6 +96,8 @@ export default class Calendar extends Component {
       this.myUserGroupsRef.off();
     if (this.myGroupRef)
       this.myGroupRef.off();
+
+    window.removeEventListener('resize', () => this.handleWindowSizeChange());
   }
 
   //Updates the states for the group events (both groupEvents and personalEvents) using the given groupKey
@@ -110,6 +120,20 @@ export default class Calendar extends Component {
     });
   }
 
+  handleWindowSizeChange() {
+    if (window.innerWidth) {
+      if (window.innerWidth < 750) {
+        this.setState({mobile: true, drawerOpen: false});
+      } else {
+        this.setState({mobile: false, drawerOpen: true});
+      }
+    }
+  };
+
+  handleDrawerToggle() {
+    this.setState({drawerOpen: !this.state.drawerOpen});
+  }
+
   togglePersonalCal() {
     this.setState({
       displayPersonalCal: !this.state.displayPersonalCal
@@ -128,9 +152,9 @@ export default class Calendar extends Component {
     });
   }
 
-  handleNewEventDialogClose = () => {
+  handleNewEventDialogClose() {
     this.setState({ newEventDialogOpen: false });
-  };
+  }
 
   handleCopiedOpen() {
     this.setState({copied: true});
@@ -224,7 +248,7 @@ export default class Calendar extends Component {
 
     const mainContentClassName = css(
       styles.mainContent,
-      this.state.drawerOpen && styles.leftMargin
+      this.state.drawerOpen && !this.state.mobile && styles.leftMargin
     );
 
     return (
@@ -233,10 +257,11 @@ export default class Calendar extends Component {
           title={'Calendar & Me'}
           handleDrawerToggle={() => this.handleDrawerToggle()}
           handleSignOut={() => this.props.handleSignOut()}
+          mobile={this.state.mobile}
         />
 
-        <div className={'drawer'} style={{ top: '64px', position: 'fixed' }} > {/* Pushes drawer below AppBar */}
-          <Drawer open={this.state.drawerOpen} >
+        <div className={'drawer'} style={{ top: '64px', position: 'fixed', zIndex: 2 }} > {/* Pushes drawer below AppBar */}
+          <Drawer open={this.state.drawerOpen} containerStyle={{backgroundColor: 'white' }} >
 
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
             <div style={{ height: '64px' }} ></div>
@@ -259,13 +284,14 @@ export default class Calendar extends Component {
             createNewEvent={(start, end) => {
               this.handleNewEventDialogOpen(start, end);
             }}
+            height={window.innerHeight - 125}
           />
 
           <CreateGroupEvent
             open={this.state.newEventDialogOpen}
             start={this.state.newEventStart}
             end={this.state.newEventEnd}
-            handleClose={this.handleNewEventDialogClose}
+            handleClose={() => this.handleNewEventDialogClose()}
             currentGroupKey={this.state.currentGroupKey}
           />
 
@@ -285,7 +311,7 @@ export default class Calendar extends Component {
 
 class FullCalendar extends Component {
   render() {
-    return <div id="calendar"></div>;
+  return <div id="calendar"style={{position: 'relative', zIndex: 0}}></div>;
   }
 
   updateCalendar() {
@@ -296,6 +322,7 @@ class FullCalendar extends Component {
         center: 'title',
         right: 'agendaWeek,agendaDay'
       },
+      height: this.props.height,
       selectable: true,
       select: (start, end) => {
         this.props.createNewEvent(start, end)

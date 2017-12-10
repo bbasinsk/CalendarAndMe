@@ -11,14 +11,8 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 export default class NavBar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      drawerOpen: false,
-      menuOpen: false
-    };
+    this.state = {};
   }
-
-  handleDrawerToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
-  handleMenuToggle = () => this.setState({ menuOpen: !this.state.menuOpen });
 
   render() {
 
@@ -26,8 +20,8 @@ export default class NavBar extends Component {
       <div>
         <AppBar
           title={this.props.title}
-          showMenuIconButton={this.state.menuOpen}
-          // onLeftIconButtonTouchTap={() => this.handleDrawerToggle()}
+          showMenuIconButton={this.props.mobile}
+          onLeftIconButtonTouchTap={() => this.props.handleDrawerToggle()}
           iconElementRight={<LoggedMenu handleSignOut={() => { this.props.handleSignOut() }} />}
         />
       </div>
