@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import moment from 'moment';
+
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -35,7 +37,7 @@ export default class CreateGroupEventCAL extends Component {
     return (
       <div>
         <Dialog
-          title="Create an event"
+          title="New Group Event"
           actions={[
             <FlatButton
               label="Cancel"
@@ -54,9 +56,11 @@ export default class CreateGroupEventCAL extends Component {
           modal={false}
           open={this.props.open}
           onRequestClose={this.handleClose}
-        >
-          Enter a name for your event.
+        > 
+          
+          Start: {moment(this.props.start).calendar()} <br />
           <br />
+          End: {moment(this.props.end).calendar()} <br />
           
           <TextField
             floatingLabelText="Event Name"
