@@ -247,8 +247,9 @@ export default class Calendar extends Component {
 
 
     const mainContentClassName = css(
-      styles.mainContent,
-      this.state.drawerOpen && !this.state.mobile && styles.leftMargin
+      styles.topPadding,
+      !this.state.mobile && styles.padding,
+      !this.state.mobile && this.state.drawerOpen && styles.leftMargin
     );
 
     return (
@@ -284,7 +285,6 @@ export default class Calendar extends Component {
             createNewEvent={(start, end) => {
               this.handleNewEventDialogOpen(start, end);
             }}
-            height={window.innerHeight - 125}
           />
 
           <CreateGroupEvent
@@ -322,7 +322,7 @@ class FullCalendar extends Component {
         center: 'title',
         right: 'agendaWeek,agendaDay'
       },
-      height: this.props.height,
+      height: window.innerHeight - 100,
       selectable: true,
       select: (start, end) => {
         this.props.createNewEvent(start, end)
