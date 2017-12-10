@@ -6,7 +6,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import firebase from 'firebase';
 
-export default class CreateGroupEvent extends Component {
+export default class CreateGroupEventCAL extends Component {
   constructor(props) {
     super(props);
     this.state = {}

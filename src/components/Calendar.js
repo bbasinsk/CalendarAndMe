@@ -7,7 +7,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 import CalDrawer from './Drawer/CalDrawer';
 import NavBar from './NavBar';
-import CreateGroupEvent from './CreateGroupEvent';
+import CreateGroupEventCAL from './CreateGroupEventCAL';
 
 import firebase from 'firebase/app';
 import moment from 'moment';
@@ -287,7 +287,7 @@ export default class Calendar extends Component {
             }}
           />
 
-          <CreateGroupEvent
+          <CreateGroupEventCAL
             open={this.state.newEventDialogOpen}
             start={this.state.newEventStart}
             end={this.state.newEventEnd}

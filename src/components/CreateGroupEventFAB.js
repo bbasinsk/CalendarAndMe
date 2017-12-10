@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 
-export default class CreateNewEvent extends Component {
+export default class CreateGroupEventFAB extends Component {
   constructor(props) {
     super(props);
 
