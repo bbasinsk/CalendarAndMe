@@ -18,8 +18,6 @@ export default class CreateGroupEventCAL extends Component {
       start: this.props.start,
       end: this.props.end
     }
-    console.log(newEvent);
-    console.log(this.props.currentGroupKey);
 
     this.myGroupRef = firebase.database().ref('groups/' + this.props.currentGroupKey);
     this.myGroupRef.child('/groupEvents').push(newEvent);
