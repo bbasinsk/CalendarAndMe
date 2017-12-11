@@ -148,7 +148,6 @@ export default class CreateGroupEventFAB extends Component {
             <TimePicker
               format="ampm"
               hintText="Start Time"
-              //value={this.state.startTime}
               minutesStep={5}
               onChange={this.handleChangeStartTimePicker}
             />
@@ -165,9 +164,7 @@ export default class CreateGroupEventFAB extends Component {
             <TimePicker
               format="ampm"
               hintText="End Time"
-              //value={this.state.endTime}
               minutesStep={5}
-              //defaultTime={new Date()}
               onChange={this.handleChangeEndTimePicker}
             />
           </span>
