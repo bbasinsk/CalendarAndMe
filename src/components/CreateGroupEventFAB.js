@@ -30,12 +30,20 @@ export default class CreateGroupEventFAB extends Component {
       startTime: null,
       endTime: null,
       eventName: '',
-      dialogOpen: false
+      dialogOpen: false,
     }
   }
 
   createGroupEvent() {
-    console.log(this.state.startDate);
+    // console.log('startDate: ' + this.state.startDate);
+    // console.log(typeof(this.state.startDate));
+    // console.log(typeof(this.state.startTime));
+    //startDate: 
+    //Sat Dec 10 2016 00:00:00 GMT-0800 (PST)
+    
+    //want in form: (dateTime)
+    //2017-12-17T21:15:00-08:00
+
 
     let startYear = moment(this.state.startDate).get('year');
     let startMonth = moment(this.state.startDate).get('month');
@@ -50,10 +58,10 @@ export default class CreateGroupEventFAB extends Component {
     let endMinute = moment(this.state.endTime).get('minute');
 
 
-    let startDateTime = startYear+'-'+startMonth+'-'+startDate+' '+startHour+':'+startMinute;
-
-    // should log out a datetime that looks something like "2017-12-10 7:30" I think.
+    let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ":00-08:00";
+    let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ":00-08:00";
     console.log(startDateTime);
+    console.log(endDateTime)
 
 
     let newEvent = {
@@ -62,7 +70,7 @@ export default class CreateGroupEventFAB extends Component {
       end: this.state.endDate + this.state.endTime
     }
 
-    console.log(newEvent);
+    // console.log(newEvent);
 
 
   }
@@ -87,11 +95,11 @@ export default class CreateGroupEventFAB extends Component {
     });
   };
 
-  handleChangeStartTimePicker(event, date) {
+  handleChangeStartTimePicker = (event, date) => {
     this.setState({ startTime: date });
   };
 
-  handleChangeEndTimePicker(event, date) {
+  handleChangeEndTimePicker = (event, date) => {
     this.setState({ endTime: date });
   };
 
@@ -144,7 +152,7 @@ export default class CreateGroupEventFAB extends Component {
             onChange={(event) => this.handleTextInput(event)}
           />
           <br />
-          
+
           <span>
             <DatePicker
               onChange={this.handleChangeStartDate}
@@ -152,11 +160,11 @@ export default class CreateGroupEventFAB extends Component {
               defaultDate={new Date()}
             />
             <TimePicker
+              format="ampm"
               hintText="Start Time"
-              // value={this.state.startTime}
+              value={this.state.startTime}
               minutesStep={5}
-              value={new Date()}
-              onChange={() => this.handleChangeStartTimePicker()}
+              onChange={this.handleChangeStartTimePicker}
             />
           </span>
 
@@ -167,11 +175,12 @@ export default class CreateGroupEventFAB extends Component {
               defaultDate={new Date()}
             />
             <TimePicker
+              format="ampm"
               hintText="End Time"
-              // value={this.state.endTime}
+              value={this.state.endTime}
               minutesStep={5}
               defaultTime={new Date()}
-              onChange={() => this.handleChangeEndTimePicker()}
+              onChange={this.handleChangeEndTimePicker}
             />
           </span>
 
