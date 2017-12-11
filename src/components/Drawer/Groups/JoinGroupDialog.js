@@ -57,7 +57,7 @@ export default class JoinGroupDialog extends Component {
     this.setState(newState);
   }
 
-  //CLears the state if the user cancels or joins a group
+  //Clears the state if the user cancels or joins a group
   clearErrorMessage() {
     this.setState({
       errorMessage: ''
@@ -65,11 +65,7 @@ export default class JoinGroupDialog extends Component {
   }
 
   render() {
-    let errorMessage2= {
-      email:null,
-      password:null
-    };
-    
+     
     //Sets error message
     let errorMessage = '';
     if (this.state.errorMessage) {
