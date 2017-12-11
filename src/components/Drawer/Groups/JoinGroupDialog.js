@@ -58,7 +58,6 @@ export default class JoinGroupDialog extends Component {
   }
 
   clearErrorMessage() {
-    //specify which field to change in the stage
     this.setState({
       errorMessage: ''
     });
@@ -67,7 +66,7 @@ export default class JoinGroupDialog extends Component {
   render() {
     let errorMessage = '';
     if (this.state.errorMessage) {
-      errorMessage = "No group was found under that group key."
+      errorMessage = this.state.errorMessage;
     }
     return (
       <div>
