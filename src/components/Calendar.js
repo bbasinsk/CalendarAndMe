@@ -36,7 +36,6 @@ export default class Calendar extends Component {
     };
   }
 
-
   componentDidMount() {
     if (this.props.currentUser) {
       let uid = this.props.currentUser.uid;
