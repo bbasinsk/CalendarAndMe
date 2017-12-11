@@ -220,7 +220,7 @@ export default class Calendar extends Component {
       groupEvents = eventIds.map((id) => {
         let event = {};
         event.type = 'groupEvents'
-        event.title = this.state.groupEvents[id].summary;
+        event.title = this.state.currentGroupName + ' - ' + this.state.groupEvents[id].summary;
         event.start = new Date(this.state.groupEvents[id].start);
         event.end = new Date(this.state.groupEvents[id].end);
         event.color = '#263238';
