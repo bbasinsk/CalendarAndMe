@@ -43,8 +43,8 @@ export default class CreateGroupEventFAB extends Component {
     let endMinute = moment(this.state.endTime).get('minute');
     endMinute = endMinute >= 10 ? endMinute : '0' + endMinute;
 
-    let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ':' + startSecond;
-    let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ':' + endSecond;
+    let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ':00';
+    let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ':00';
 
     let newEvent = {
       summary: this.state.eventName,
