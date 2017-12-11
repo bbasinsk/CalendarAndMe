@@ -36,21 +36,25 @@ export default class CreateGroupEventFAB extends Component {
 
   createGroupEvent() {
     let startYear = moment(this.state.startDate).get('year');
-    let startMonth = moment(this.state.startDate).get('month');
+    let startMonth = moment(this.state.startDate).get('month') + 1;
     let startDate = moment(this.state.startDate).get('date');
     let startHour = moment(this.state.startTime).get('hour');
     let startMinute = moment(this.state.startTime).get('minute');
+    let startSecond = moment(this.state.startTime).get('second');
 
     let endYear = moment(this.state.endDate).get('year');
-    let endMonth = moment(this.state.endDate).get('month');
+    let endMonth = moment(this.state.endDate).get('month') + 1;
     let endDate = moment(this.state.endDate).get('date');
     let endHour = moment(this.state.endTime).get('hour');
     let endMinute = moment(this.state.endTime).get('minute');
+    let endSecond = moment(this.state.endTime).get('second');
 
+    
 
-    let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ":00";
-    let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ":00";
+    let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ':' + startSecond;
+    let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ':' + endSecond;
 
+    console.log(startDateTime)
 
     let newEvent = {
       summary: this.state.eventName,
