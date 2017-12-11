@@ -261,11 +261,11 @@ export default class Calendar extends Component {
           mobile={this.state.mobile}
         />
 
-        <div className={'drawer'} style={{ top: '64px', position: 'fixed', zIndex: 2 }} > {/* Pushes drawer below AppBar */}
-          <Drawer open={this.state.drawerOpen} containerStyle={{backgroundColor: 'white' }} >
+        <div className={css(styles.drawer)} > {/* Pushes drawer below AppBar */}
+          <Drawer open={this.state.drawerOpen} >
 
             {/* Pushes drawer content down so that the appbar doesn't cover it */}
-            <div style={{ height: '64px' }} ></div>
+            <div className={css(styles.drawerTopMargin)} ></div>
 
             <CalDrawer
               togglePersonalCal={() => this.togglePersonalCal()}

@@ -10,6 +10,14 @@ const styles = StyleSheet.create({
   },
   leftMargin: {
     marginLeft: 256
+  },
+  drawer: {
+    top: '64px', 
+    position: 'fixed', 
+    zIndex: 2 
+  },
+  drawerTopMargin: {
+    height: '64px'
   }
 });
 
