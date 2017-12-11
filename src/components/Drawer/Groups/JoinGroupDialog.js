@@ -9,7 +9,9 @@ import firebase from 'firebase';
 export default class JoinGroupDialog extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = { 
+      errorMessage: ''
+    }
   }
 
   joinGroup(groupKey) {
@@ -38,10 +40,15 @@ export default class JoinGroupDialog extends Component {
 
         this.userGroupsRef.off();
         this.groupToJoinRef.off();
+        this.clearErrorMessage();
+        this.props.handleClose();
+      } else {
+        this.setState({
+          errorMessage: "No group was found under that group key."
+        });
       }
     });
   }
-
 
   handleTextInput(event) {
     //specify which field to change in the stage
@@ -50,7 +57,18 @@ export default class JoinGroupDialog extends Component {
     this.setState(newState);
   }
 
+  clearErrorMessage() {
+    //specify which field to change in the stage
+    this.setState({
+      errorMessage: ''
+    });
+  }
+
   render() {
+    let errorMessage = '';
+    if (this.state.errorMessage) {
+      errorMessage = "No group was found under that group key."
+    }
     return (
       <div>
         <Dialog
@@ -59,14 +77,17 @@ export default class JoinGroupDialog extends Component {
             <FlatButton
               label="Cancel"
               primary={true}
-              onClick={() => this.props.handleClose()}
+              onClick={() => {
+                this.clearErrorMessage()
+                this.props.handleClose()
+              }}
             />,
             <FlatButton
               label="Join"
               primary={true}
               onClick={() => {
                 this.joinGroup(this.state.groupKey);
-                this.props.handleClose();
+                
               }}
             />,
           ]}
@@ -74,12 +95,13 @@ export default class JoinGroupDialog extends Component {
           open={this.props.open}
           onRequestClose={this.handleClose}
         >
-          Enter a name for your new group.
+          Get the group key from a current member and enter it below.
             <br />
           <TextField
             floatingLabelText="Group Key"
             type="groupKey"
             name="groupKey"
+            errorText= {errorMessage}
             onChange={(event) => this.handleTextInput(event)}
           />
         </Dialog>

@@ -165,7 +165,7 @@ export class SignupForm extends Component {
         <AppBar
           title={"Calendar & Me"}
           iconElementLeft={<Link to='/'><IconButton><ArrowBackIcon color='white' /></IconButton></Link>}
-          iconElementRight={<AppBarButton link='login' />}
+          iconElementRight={<AppBarButton link='log In' />}
         />
         <div className="login-form content">
           <Paper className='auth-card' zDepth={2}>
