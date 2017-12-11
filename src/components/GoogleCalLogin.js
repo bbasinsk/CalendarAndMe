@@ -85,6 +85,12 @@ class GetEvents extends Component {
 const styles = StyleSheet.create({
   center: {
     textAlign: 'center'
+  },
+  googleImg: {
+    marginTop: 50,
+    width: 100,
+    height: 100,
+    pointerEvents: 'none'
   }
 });
 
@@ -112,10 +118,15 @@ function SignIn(props) {
   }
   return (
     <div>
-      <NavBar signOut={() => props.handleSignOut()} title={'Calendar & Me'} />
+      <NavBar 
+        signOut={() => {}}
+        onGLogin={true}
+        title={'Calendar & Me'}
+      />
 
       <div className={css(styles.center)}>
-        <h2 className='auth-title'>Log In To Your Google Calendar</h2>
+        <img className={css(styles.googleImg)} src={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Google-favicon-2015.png/150px-Google-favicon-2015.png'} />
+        <h2 className='auth-title'>Connect Your Google Calendar</h2>
         <br />
         <RaisedButton
           label="Log in"

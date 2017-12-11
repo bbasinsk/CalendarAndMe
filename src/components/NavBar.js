@@ -17,9 +17,11 @@ export default class NavBar extends Component {
         <AppBar
           role='banner'
           title={this.props.title}
-          showMenuIconButton={this.props.mobile}
+          showMenuIconButton={!this.props.onGLogin && this.props.mobile}
           onLeftIconButtonTouchTap={() => this.props.handleDrawerToggle()}
-          iconElementRight={<FlatButton label={'Sign Out'} onClick={() => { this.props.handleSignOut() }} />}
+          iconElementRight={
+              this.props.onGLogin !== true && <FlatButton label={'Sign Out'} onClick={() => { this.props.handleSignOut() }} />
+          }
         />
       </div>
     );
