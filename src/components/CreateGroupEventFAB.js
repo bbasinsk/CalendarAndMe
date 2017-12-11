@@ -12,23 +12,11 @@ import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 
-
 export default class CreateGroupEventFAB extends Component {
   constructor(props) {
     super(props);
 
-    const startDate = new Date();
-    const endDate = new Date();
-    startDate.setFullYear(startDate.getFullYear());
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setFullYear(endDate.getFullYear());
-    endDate.setHours(0, 0, 0, 0);
-
     this.state = {
-      startDate: startDate,
-      endDate: endDate,
-      startTime: null,
-      endTime: null,
       eventName: '',
       dialogOpen: false,
     }
@@ -37,30 +25,33 @@ export default class CreateGroupEventFAB extends Component {
   createGroupEvent() {
     let startYear = moment(this.state.startDate).get('year');
     let startMonth = moment(this.state.startDate).get('month') + 1;
+    startMonth = startMonth >= 10 ? startMonth : '0' + startMonth;
     let startDate = moment(this.state.startDate).get('date');
+    startDate = startDate >= 10 ? startDate : '0' + startDate;
     let startHour = moment(this.state.startTime).get('hour');
+    startHour = startHour >= 10 ? startHour : '0' + startHour;
     let startMinute = moment(this.state.startTime).get('minute');
-    let startSecond = moment(this.state.startTime).get('second');
+    startMinute = startMinute >= 10 ? startMinute : '0' + startMinute;
 
     let endYear = moment(this.state.endDate).get('year');
     let endMonth = moment(this.state.endDate).get('month') + 1;
+    endMonth = endMonth >= 10 ? endMonth : '0' + endMonth;
     let endDate = moment(this.state.endDate).get('date');
+    endDate = endDate >= 10 ? endDate : '0' + endDate;
     let endHour = moment(this.state.endTime).get('hour');
+    endHour = endHour >= 10 ? endHour : '0' + endHour;
     let endMinute = moment(this.state.endTime).get('minute');
-    let endSecond = moment(this.state.endTime).get('second');
-
-    
+    endMinute = endMinute >= 10 ? endMinute : '0' + endMinute;
 
     let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ':' + startSecond;
     let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ':' + endSecond;
-
-    console.log(startDateTime)
 
     let newEvent = {
       summary: this.state.eventName,
       start: startDateTime,
       end: endDateTime
     }
+
 
     this.myGroupRef = firebase.database().ref('groups/' + this.props.currentGroupKey);
     this.myGroupRef.child('/groupEvents').push(newEvent);
@@ -151,6 +142,8 @@ export default class CreateGroupEventFAB extends Component {
               onChange={this.handleChangeStartDate}
               floatingLabelText="Start Date"
               defaultDate={new Date()}
+              locale="en-US"
+              firstDayOfWeek={0}
             />
             <TimePicker
               format="ampm"
@@ -166,6 +159,8 @@ export default class CreateGroupEventFAB extends Component {
               onChange={this.handleChangeEndDate}
               floatingLabelText="End Date"
               defaultDate={new Date()}
+              locale="en-US"
+              firstDayOfWeek={0}
             />
             <TimePicker
               format="ampm"

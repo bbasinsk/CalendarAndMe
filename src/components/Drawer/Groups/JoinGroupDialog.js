@@ -65,11 +65,7 @@ export default class JoinGroupDialog extends Component {
   }
 
   render() {
-    let errorMessage2= {
-      email:null,
-      password:null
-    };
-    
+     
     //Sets error message
     let errorMessage = '';
     if (this.state.errorMessage) {
