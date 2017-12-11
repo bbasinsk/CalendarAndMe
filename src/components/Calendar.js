@@ -261,7 +261,7 @@ export default class Calendar extends Component {
           mobile={this.state.mobile}
         />
 
-        <div className={css(styles.drawer)} > {/* Pushes drawer below AppBar */}
+        <div role='navigation' className={css(styles.drawer)} > {/* Pushes drawer below AppBar */}
           <Drawer open={this.state.drawerOpen} >
 
             {/* Pushes drawer content down so that the appbar doesn't cover it */}

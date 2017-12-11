@@ -55,7 +55,7 @@ export default class Groups extends Component {
             React.Children.toArray([
               <ListItem 
                 value={val} 
-                leftAvatar={<Avatar src={avatarSrc} />}
+                leftAvatar={<Avatar src={avatarSrc} alt={group.name} />}
                 primaryText={group.name}
                 onClick={() => this.handleGroupClick(group.key)}
               />

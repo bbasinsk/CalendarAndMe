@@ -61,11 +61,12 @@ export class LoginForm extends Component {
     return (
       <div>
         <AppBar
+          role={'banner'}
           title={"Calendar & Me"}
           iconElementLeft={<Link to='/'><IconButton><ArrowBackIcon color='white' /></IconButton></Link>}
           iconElementRight={<AppBarButton link='join' />}
         />
-        <div className='login-form content'>
+        <div role={'main'} className='login-form content'>
           <Paper className='auth-card' zDepth={2}>
             <h2 className='auth-title'>Log In</h2>
             <TextField
@@ -163,11 +164,12 @@ export class SignupForm extends Component {
     return (
       <div>
         <AppBar
+          role={'banner'}
           title={"Calendar & Me"}
           iconElementLeft={<Link to='/'><IconButton><ArrowBackIcon color='white' /></IconButton></Link>}
           iconElementRight={<AppBarButton link='log In' />}
         />
-        <div className="login-form content">
+        <div role={'main'} className="login-form content">
           <Paper className='auth-card' zDepth={2}>
             <h2 className='auth-title' >Sign Up</h2>
             <div>

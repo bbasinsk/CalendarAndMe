@@ -15,6 +15,7 @@ export default class NavBar extends Component {
     return (
       <div>
         <AppBar
+          role='banner'
           title={this.props.title}
           showMenuIconButton={this.props.mobile}
           onLeftIconButtonTouchTap={() => this.props.handleDrawerToggle()}

@@ -153,6 +153,7 @@ export default class CreateGroupEventFAB extends Component {
     return (
       <div>
         <FloatingActionButton
+          aria-label='Create New Event'
           secondary={true}
           style={{ position: 'fixed', right: 30, bottom: 30 }}
           onClick={() => this.handleDialogOpen()}
@@ -204,6 +205,7 @@ export default class CreateGroupEventFAB extends Component {
               firstDayOfWeek={0}
             />
             <TimePicker
+              aria-label='Start Time'
               format="ampm"
               hintText="Start Time"
               minutesStep={5}
@@ -221,6 +223,7 @@ export default class CreateGroupEventFAB extends Component {
               firstDayOfWeek={0}
             />
             <TimePicker
+              aria-label='End Time'
               format="ampm"
               hintText="End Time"
               minutesStep={5}
