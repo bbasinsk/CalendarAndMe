@@ -57,22 +57,34 @@ export default class CreateGroupEventFAB extends Component {
     let endHour = moment(this.state.endTime).get('hour');
     let endMinute = moment(this.state.endTime).get('minute');
 
-
     let startDateTime = startYear + '-' + startMonth + '-' + startDate + 'T' + startHour + ':' + startMinute + ":00-08:00";
     let endDateTime = endYear + '-' + endMonth + '-' + endDate + 'T' + endHour + ':' + endMinute + ":00-08:00";
     console.log(startDateTime);
     console.log(endDateTime)
-
 
     let newEvent = {
       summary: this.state.eventName,
       start: this.state.startDate + this.state.startTime,
       end: this.state.endDate + this.state.endTime
     }
-
+    if (newEvent.summary === undefined || newEvent.summary === '' || newEvent.summary === null) {
+      this.setState({
+        errorMessage: "Please enter an event name.",
+        eventName: null
+      });
+    // } else if () {
+    //   this.setState({
+    //     errorMessage: "Please enter an event name.",
+    //     eventName: null
+    //   });
+    }else {
+      console.log(this.state);
+      this.myGroupRef = firebase.database().ref('groups/' + this.props.currentGroupKey);
+      this.myGroupRef.child('/groupEvents').push(newEvent);
+      this.clearState();
+      this.handleDialogClose();
+    }
     // console.log(newEvent);
-
-
   }
 
   handleDialogOpen() {
@@ -110,7 +122,19 @@ export default class CreateGroupEventFAB extends Component {
     this.setState(newState);
   }
 
+  //CLears the state if the user cancels or an event is created
+  clearState() {
+    this.setState({
+      errorMessage: null,
+      eventName: null
+    });
+  }
+
   render() {
+    let errorMessage= '';
+    if (this.state.errorMessage && this.state.errorMessage !== null) {
+      errorMessage = this.state.errorMessage;
+    }
     return (
       <div>
         <FloatingActionButton
@@ -136,7 +160,6 @@ export default class CreateGroupEventFAB extends Component {
               primary={true}
               onClick={() => {
                 this.createGroupEvent();
-                this.handleDialogClose();
               }}
             />,
           ]}
@@ -149,6 +172,7 @@ export default class CreateGroupEventFAB extends Component {
           <TextField
             floatingLabelText="Event Name"
             name="eventName"
+            errorText={errorMessage}
             onChange={(event) => this.handleTextInput(event)}
           />
           <br />
