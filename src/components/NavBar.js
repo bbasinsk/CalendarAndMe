@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-// import '../styles/NavBar.css';
 
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
 import AppBar from 'material-ui/AppBar';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import { FlatButton } from 'material-ui';
 
 
 export default class NavBar extends Component {
@@ -22,25 +18,10 @@ export default class NavBar extends Component {
           title={this.props.title}
           showMenuIconButton={this.props.mobile}
           onLeftIconButtonTouchTap={() => this.props.handleDrawerToggle()}
-          iconElementRight={<LoggedMenu handleSignOut={() => { this.props.handleSignOut() }} />}
+          iconElementRight={<FlatButton label={'Sign Out'} onClick={() => { this.props.handleSignOut() }} />}
         />
       </div>
     );
   }
 }
 
-class LoggedMenu extends Component {
-  render() {
-    return (
-      <IconMenu
-        iconButtonElement={<IconButton><MoreVertIcon color='white' /></IconButton>}
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-      >
-        <MenuItem
-          primaryText="Sign out"
-          onClick={() => this.props.handleSignOut()} />
-      </IconMenu>
-    );
-  }
-}
