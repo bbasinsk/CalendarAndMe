@@ -14,6 +14,9 @@ export default class LandingPage extends Component {
     const styles = StyleSheet.create({
       center: {
         textAlign: 'center'
+      },
+      padding: {
+        padding: 50
       }
     });
 
@@ -25,7 +28,7 @@ export default class LandingPage extends Component {
           showMenuIconButton={false}
           iconElementRight={<AppBarButton link='log In' />}
         />
-        <div className={css(styles.center)}>
+        <div className={css(styles.center, styles.padding)}>
 
           <h1>{'Calendar & Me'}</h1>
 
