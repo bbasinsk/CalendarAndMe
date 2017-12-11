@@ -20,9 +20,17 @@ export default class CreateGroupEventCAL extends Component {
       start: this.props.start,
       end: this.props.end
     }
-
-    this.myGroupRef = firebase.database().ref('groups/' + this.props.currentGroupKey);
-    this.myGroupRef.child('/groupEvents').push(newEvent);
+    if (newEvent.summary === undefined || newEvent.summary === '' ||newEvent.summary === null) {
+      this.setState({
+        errorMessage: "Please enter an event name.",
+        eventName: null
+      });
+    } else {
+      this.myGroupRef = firebase.database().ref('groups/' + this.props.currentGroupKey);
+      this.myGroupRef.child('/groupEvents').push(newEvent);
+      this.clearState();
+      this.props.handleClose();
+    }
   }
 
   handleTextInput(event) {
@@ -32,7 +40,19 @@ export default class CreateGroupEventCAL extends Component {
     this.setState(newState);
   }
 
+  //CLears the state if the user cancels or an event is created
+  clearState() {
+      this.setState({
+        errorMessage: null,
+        eventName: null
+      });
+  }
+
   render() {
+    let errorMessage= '';
+    if (this.state.errorMessage && this.state.errorMessage !== null) {
+      errorMessage = this.state.errorMessage;
+    }
 
     return (
       <div>
@@ -42,14 +62,16 @@ export default class CreateGroupEventCAL extends Component {
             <FlatButton
               label="Cancel"
               primary={true}
-              onClick={() => this.props.handleClose()}
+              onClick={() => {
+                this.clearState()
+                this.props.handleClose()
+              }}
             />,
             <FlatButton
               label="Create"
               primary={true}
               onClick={() => {
                 this.createNewEvent();
-                this.props.handleClose();
               }}
             />,
           ]}
@@ -66,6 +88,7 @@ export default class CreateGroupEventCAL extends Component {
             floatingLabelText="Event Name"
             type="eventName"
             name="eventName"
+            errorText={errorMessage}
             onChange={(event) => this.handleTextInput(event)}
           />
         </Dialog>

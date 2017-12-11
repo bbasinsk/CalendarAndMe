@@ -44,8 +44,10 @@ export default class NewGroupDialog extends Component {
       }
     }
 
+    //Checks that a name is given and doesn't include specific characters that won't
+    //create a valid path
     nameCheck(groupName) {
-      if (groupName == undefined) {
+      if (groupName === undefined || groupName === "") {
         this.setState({
           errorMessage:{
             name: "Please enter a group name.",
@@ -66,8 +68,10 @@ export default class NewGroupDialog extends Component {
       }
     }
   
+    //Checks to make sure the url is for a jpg or png image
     imageCheck(imgURL) {
-      if (imgURL !== undefined) {
+      console.log(imgURL);
+      if (imgURL !== undefined && imgURL !== "") {
         let imageType = imgURL.substr(-4);
         if (imageType !== '.jpg' && imageType !== '.png') {
           this.setState({
@@ -83,6 +87,7 @@ export default class NewGroupDialog extends Component {
       }
       return true;
     }
+
     handleTextInput(event) {
       //specify which field to change in the stage
       let newState = {};
@@ -90,6 +95,7 @@ export default class NewGroupDialog extends Component {
       this.setState(newState);
     }
 
+    //CLears the state if the user cancels or a group is created
     clearErrorMessage() {
       this.setState({
         errorMessage:{
