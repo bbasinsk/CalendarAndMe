@@ -125,7 +125,7 @@ function SignIn(props) {
       />
 
       <div className={css(styles.center)}>
-        <img className={css(styles.googleImg)} src={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Google-favicon-2015.png/150px-Google-favicon-2015.png'} />
+        <img alt='Google Logo' className={css(styles.googleImg)} src={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Google-favicon-2015.png/150px-Google-favicon-2015.png'} />
         <h2 className='auth-title'>Connect Your Google Calendar</h2>
         <br />
         <RaisedButton
