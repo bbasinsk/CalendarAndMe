@@ -10,6 +10,18 @@ Our application helps busy individuals plan and schedule events. With our applic
 2. `npm install` or `yarn install`
 3. `npm start` or `yarn start`
 
+___
+
+1. Start by clicking on **Sign Up**
+2. Create an account
+3. Log into your Google Calendar account to sync your Google Calendar
+4. Create A Group
+5. Share your group by clicking on **Get Group Key** and send that to a friend
+6. Join a group by clicking on **Join A Group** and enter in the key
+7. Create events by clicking and dragging on the calendar or by clicking the `+` button in the bottom right. *(Background shading shows that someone is busy during that time!)*
+
+
+
 ## Created By
 - Ben Basinski
 - Michelle Ho
